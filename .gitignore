@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.usda.bak
+output/
+*.log
+
+# Isaac Sim / Kit scratch state some environments generate in-place
+kit_cache/
+.nvidia-omniverse/
