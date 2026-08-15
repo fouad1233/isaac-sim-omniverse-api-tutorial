@@ -49,6 +49,27 @@ set pins that root to the world itself — nothing anchors a `RigidBodyAPI`
 prim in place by default, including this one; without the fixed joint, the
 "base" would just fall like Lecture 05's box. The `RevoluteJoint` connects
 base to arm and defines the one degree of freedom between them. And
+
+**"Fixed" only fixes to wherever the anchors actually agree, and that took
+an actual bug to find.** A `FixedJoint` with only `Body1` set makes side 0
+of the joint *be* the world frame — but its local anchor is still just a
+point, and left at the default it's `(0, 0, 0)` **in world coordinates**,
+which is the world origin, not wherever `Body1` happens to sit. The first
+version of this lecture didn't set `fixed.CreateLocalPos0Attr(...)` at
+all — and Base got silently dragged from `(0, 0, 1.0)` down to the world
+origin the instant `timeline.play()` ran, every single time, with no
+error and no warning. It stayed invisible here because this lecture never
+checks Base's own position, only the arm's *angle*, and the angle
+dynamics don't care what height the whole assembly sits at. It stopped
+being invisible the moment [Lecture 10](lecture10.md) put a floor at
+`z = 0` into the same scene and the wrongly-anchored base collided with
+it. The fix is one line —
+`fixed.CreateLocalPos0Attr(Gf.Vec3f(*BASE_POS))`, giving side 0's anchor
+the same world position Base is actually placed at — and the lesson is the
+same one this course keeps landing on: a value defaulting to something
+plausible-looking is not the same as it defaulting to *correct*, and the
+only way to tell them apart is to check a number, not read the code and
+nod.
 `DriveAPI`, applied *to the joint*, is what actually commands it — a joint
 with no drive applied would swing freely under gravity like a real,
 un-actuated pendulum, which is worth trying (see below).

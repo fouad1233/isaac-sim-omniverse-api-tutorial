@@ -65,12 +65,12 @@ normal and every lecture's `.md` tells you what output to expect after that.
 | 2 | [Stage & USD Basics](lectures/lecture02.md) | Stage / Layer / Prim / Attribute, `DefinePrim`, traversal, saving `.usda` |
 | 3 | [Transforms](lectures/lecture03.md) | `XformCommonAPI`, translate/rotate/scale, the rotation-order convention that trips everyone up once |
 | 4 | [Composition: References vs Flattening](lectures/lecture04.md) | Referencing an asset into your stage vs `Stage.Export()`, and why one of those can turn a 20 KB file into 200+ MB |
-| 5 | [Physics Scene & Rigid Bodies](lectures/lecture05.md) | `UsdPhysics.Scene`, why nothing falls without one, `RigidBodyAPI`/`CollisionAPI`/`MassAPI` |
-| 6 | [The Simulation Loop](lectures/lecture06.md) | `timeline.play()`, `kit.update()`, physics steps vs render frames, why "settle time" is a real thing to budget for |
-| 7 | [Cameras & Rendering](lectures/lecture07.md) | `UsdGeom.Camera`, `isaacsim.sensors.camera.Camera`, capturing RGBA, focal length/aperture → field of view |
-| 8 | [Lights](lectures/lecture08.md) | `UsdLux` light types, and a worked demo of why a `DomeLight` alone cannot light an enclosed room |
-| 9 | [Articulations & Joint Drives](lectures/lecture09.md) | Building a jointed body, `DriveAPI` stiffness/damping, commanding and verifying convergence |
-| 10 | [Capstone](lectures/lecture10.md) | One script: stage + physics + light + camera + a falling body, wired together end to end |
+| 5 | [Physics Scene & Rigid Bodies](lectures/lecture05.md) | `UsdPhysics.Scene`, `RigidBodyAPI`/`CollisionAPI`/`MassAPI`, and a documented old finding ("nothing simulates without a scene") that a fresh check on this version proved wrong |
+| 6 | [The Simulation Loop](lectures/lecture06.md) | `timeline.play()/pause()/stop()` — three different behaviors, not a toggle — and why `kit.update()` is a bundle (UI+render+physics), not one atomic step |
+| 7 | [Cameras & Rendering](lectures/lecture07.md) | `UsdGeom.Camera`, `isaacsim.sensors.camera.Camera`, capturing RGBA, focal length/aperture → field of view, and why the first couple of frames come back `None` |
+| 8 | [Lights](lectures/lecture08.md) | `UsdLux` light types, and a worked demo of why a `DomeLight` alone cannot light an enclosed room — and why turning it up doesn't fix that |
+| 9 | [Articulations & Joint Drives](lectures/lecture09.md) | `ArticulationRootAPI`, `RevoluteJoint`, `DriveAPI` stiffness/damping, steady-state error under load, and a real `FixedJoint` anchor bug caught by checking rather than assuming |
+| 10 | [Capstone](lectures/lecture10.md) | One script: physics + a driven articulated joint + placed lighting + a camera, wired together end to end — and the scene that caught Lecture 09's bug |
 
 ## Why these specific ten
 

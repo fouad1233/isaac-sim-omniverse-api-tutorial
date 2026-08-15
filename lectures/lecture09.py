@@ -16,6 +16,7 @@ from pxr import Gf, Usd, UsdGeom, UsdPhysics  # noqa: E402
 
 TARGET_DEG = 45.0
 CHECKPOINTS = (0, 5, 10, 15, 20, 30, 50, 80, 120)
+BASE_POS = (0.0, 0.0, 1.0)
 
 
 def build_single_joint_arm(stiffness, damping):
@@ -41,14 +42,24 @@ def build_single_joint_arm(stiffness, damping):
     # pile of separately-constrained rigid bodies.
     base = UsdGeom.Cube.Define(stage, "/World/Base")
     base.CreateSizeAttr(0.2)
-    UsdGeom.XformCommonAPI(base).SetTranslate((0.0, 0.0, 1.0))
+    UsdGeom.XformCommonAPI(base).SetTranslate(BASE_POS)
     UsdPhysics.CollisionAPI.Apply(base.GetPrim())
     UsdPhysics.RigidBodyAPI.Apply(base.GetPrim())
     UsdPhysics.ArticulationRootAPI.Apply(base.GetPrim())
 
-    # Pin the base to the world itself -- a joint with only Body1 set.
+    # Pin the base to the world itself -- a joint with only Body1 set, so
+    # side 0 of the joint IS the world frame. That means side 0's local
+    # anchor has to be given in WORLD coordinates to land on the same
+    # physical point Base actually occupies -- leave it at the (0, 0, 0)
+    # default and PhysX anchors side 0 to the world ORIGIN instead, and
+    # since side 0 can't move (it's the world), it's Base -- the side that
+    # CAN move -- that gets silently dragged there the instant physics
+    # starts. This is exactly that mistake, caught by checking it rather
+    # than assuming a fixed joint automatically fixes something in place
+    # wherever you put it.
     fixed = UsdPhysics.FixedJoint.Define(stage, "/World/Base/FixedToWorld")
     fixed.CreateBody1Rel().SetTargets(["/World/Base"])
+    fixed.CreateLocalPos0Attr(Gf.Vec3f(*BASE_POS))
 
     # The arm: an Xform whose ORIGIN sits exactly at the base's position --
     # that's the pivot point -- with its visible geometry offset half a
@@ -57,7 +68,7 @@ def build_single_joint_arm(stiffness, damping):
     # anchor points both (0, 0, 0) below, instead of some offset that has
     # to be computed by hand.
     arm = UsdGeom.Xform.Define(stage, "/World/Arm")
-    UsdGeom.XformCommonAPI(arm).SetTranslate((0.0, 0.0, 1.0))
+    UsdGeom.XformCommonAPI(arm).SetTranslate(BASE_POS)
     UsdPhysics.RigidBodyAPI.Apply(arm.GetPrim())
     UsdPhysics.MassAPI.Apply(arm.GetPrim()).CreateMassAttr(0.5)
 
