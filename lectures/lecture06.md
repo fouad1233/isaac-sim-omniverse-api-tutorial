@@ -30,6 +30,12 @@ LECTURE: height before a direct physx_iface.update_simulation() call = 1.9836
 LECTURE: height after that direct call (kit.update() never ran) = 1.9727  (physics advanced on its own: True)
 ```
 
+![Line chart of box height across every update() call, colored and shaded by phase: falling during "playing" (blue), perfectly flat during "paused" (red), falling again during "resumed" (green), then jumping straight back to 2.0m during "stopped" (orange).](figures/lecture06_timeline_phases.png)
+
+Every dot is one real `kit.update()` call, not an interpolation — the flat
+red segment and the vertical jump at the stop boundary are exactly what
+the numbers above describe, just harder to miss at a glance.
+
 ## Walking through it
 
 **`pause()` freezes the simulation in place and leaves it there.** After 30

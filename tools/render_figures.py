@@ -90,6 +90,41 @@ def render_lecture05(data_path: Path) -> Path | None:
     return out
 
 
+PHASE_COLORS = {"playing": "#1f6feb", "paused": "#d1242f", "resumed": "#2da44e", "stopped": "#9a6700"}
+
+
+def render_lecture06(data_path: Path) -> Path | None:
+    if not data_path.exists():
+        return None
+    d = np.load(data_path)
+    heights, labels = d["heights"], d["labels"]
+    steps = np.arange(len(heights))
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.plot(steps, heights, "-", c="#2b2b2b", linewidth=1, zorder=2)
+    seen = set()
+    for phase in ("playing", "paused", "resumed", "stopped"):
+        mask = labels == phase
+        label = phase if phase not in seen else None
+        seen.add(phase)
+        ax.scatter(steps[mask], heights[mask], s=30, c=PHASE_COLORS[phase], label=label, zorder=3)
+    # Shade each contiguous phase band so the play/pause/resume/stop
+    # boundaries are visible at a glance, not just inferred from dot color.
+    boundaries = [0] + [i for i in range(1, len(labels)) if labels[i] != labels[i - 1]] + [len(labels)]
+    for start, end in zip(boundaries[:-1], boundaries[1:]):
+        ax.axvspan(start - 0.5, end - 0.5, color=PHASE_COLORS[labels[start]], alpha=0.08, zorder=1)
+    ax.set_xlabel("update() call index")
+    ax.set_ylabel("box height, z (m)")
+    ax.set_title("Lecture 06 -- box height across play / pause / resume / stop")
+    ax.legend(loc="center right")
+    ax.grid(True, linewidth=0.3, alpha=0.5)
+    fig.tight_layout()
+    out = FIGURES_DIR / "lecture06_timeline_phases.png"
+    fig.savefig(out, dpi=150)
+    plt.close(fig)
+    return out
+
+
 def render_lecture11(data_path: Path) -> Path | None:
     if not data_path.exists():
         return None
@@ -256,6 +291,7 @@ def render_lecture19(data_path: Path) -> Path | None:
 RENDERERS = {
     4: render_lecture04,
     5: render_lecture05,
+    6: render_lecture06,
     11: render_lecture11,
     12: render_lecture12,
     15: render_lecture15,

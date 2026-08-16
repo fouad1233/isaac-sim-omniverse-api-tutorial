@@ -59,15 +59,25 @@ def height_of(prim):
 box = build_falling_box_scene()
 timeline = omni.timeline.get_timeline_interface()
 
+# Sampled every update() call, not just at each phase's end -- this is what
+# lets the .md show a real curve (falling, then flat, then falling again,
+# then a hard reset) instead of four isolated numbers.
+phase_heights = []
+phase_labels = []
+
 timeline.play()
 for _ in range(30):
     kit.update()
+    phase_heights.append(height_of(box))
+    phase_labels.append("playing")
 h_playing = height_of(box)
 print(f"LECTURE: playing, 30 steps  -> height={h_playing:.4f}")
 
 timeline.pause()
 for _ in range(10):
     kit.update()
+    phase_heights.append(height_of(box))
+    phase_labels.append("paused")
 h_paused = height_of(box)
 print(f"LECTURE: paused,  10 more updates -> height={h_paused:.4f}  "
       f"(moved while paused: {abs(h_paused - h_playing) > 1e-6})")
@@ -75,6 +85,8 @@ print(f"LECTURE: paused,  10 more updates -> height={h_paused:.4f}  "
 timeline.play()
 for _ in range(10):
     kit.update()
+    phase_heights.append(height_of(box))
+    phase_labels.append("resumed")
 h_resumed = height_of(box)
 print(f"LECTURE: resumed, 10 more updates -> height={h_resumed:.4f}  "
       f"(continued falling from the paused height, not from the start: "
@@ -83,6 +95,8 @@ print(f"LECTURE: resumed, 10 more updates -> height={h_resumed:.4f}  "
 timeline.stop()
 for _ in range(5):
     kit.update()
+    phase_heights.append(height_of(box))
+    phase_labels.append("stopped")
 h_stopped = height_of(box)
 print(f"LECTURE: stopped, 5 more updates  -> height={h_stopped:.4f}  "
       f"(back to the original authored 2.0: {abs(h_stopped - 2.0) < 1e-3})")
@@ -110,5 +124,16 @@ print(f"\nLECTURE: height before a direct physx_iface.update_simulation() "
 print(f"LECTURE: height after that direct call (kit.update() never ran) "
       f"= {h_after_direct:.4f}  (physics advanced on its own: "
       f"{abs(h_after_direct - h_before_direct) > 1e-6})")
+
+import os  # noqa: E402
+
+import numpy as np  # noqa: E402
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+np.savez(
+    os.path.join(HERE, "data_lecture06.npz"),
+    heights=np.array(phase_heights),
+    labels=np.array(phase_labels),
+)
 
 kit.close()
