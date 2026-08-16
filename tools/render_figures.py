@@ -45,6 +45,29 @@ def _subsample(n: int, target: int) -> np.ndarray:
     return np.arange(0, n, stride)
 
 
+def render_lecture04(data_path: Path) -> Path | None:
+    if not data_path.exists():
+        return None
+    d = np.load(data_path)
+    ref_size, flat_size = int(d["ref_size"]), int(d["flat_size"])
+
+    fig, ax = plt.subplots(figsize=(5.5, 4.5))
+    bars = ax.bar(
+        ["referencing\n(points elsewhere)", "flattened\n(self-contained)"],
+        [ref_size, flat_size],
+        color=["#1f6feb", "#9a6700"],
+    )
+    ax.bar_label(bars, labels=[f"{ref_size} B", f"{flat_size} B"], padding=3)
+    ax.set_ylabel("file size (bytes)")
+    ax.set_title("Lecture 04 -- referencing vs. flattened .usda,\nreal measured file sizes")
+    ax.margins(y=0.15)
+    fig.tight_layout()
+    out = FIGURES_DIR / "lecture04_file_sizes.png"
+    fig.savefig(out, dpi=150)
+    plt.close(fig)
+    return out
+
+
 def render_lecture11(data_path: Path) -> Path | None:
     if not data_path.exists():
         return None
@@ -209,6 +232,7 @@ def render_lecture19(data_path: Path) -> Path | None:
 
 
 RENDERERS = {
+    4: render_lecture04,
     11: render_lecture11,
     12: render_lecture12,
     15: render_lecture15,

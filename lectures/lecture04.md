@@ -70,6 +70,14 @@ LECTURE: FRESH PROCESS,   referencing scene, asset missing -> /World/Prop/Body v
 LECTURE: restored output_lecture04_asset.usda
 ```
 
+![Bar chart comparing the two files' real measured sizes: the referencing file at 134 bytes versus the flattened file at 302 bytes.](figures/lecture04_file_sizes.png)
+
+Only a 2.25x difference at this toy scale — one Cube with one attribute —
+but the mechanism doesn't care about scale. A referenced warehouse with a
+few hundred thousand mesh vertices produces the same few-kilobyte
+referencing file and a flattened one hundreds of megabytes larger, for
+exactly the reason this chart already shows in miniature.
+
 ## Walking through it
 
 **A reference is a pointer, not a copy.** `prop.GetReferences().AddReference("output_lecture04_asset.usda")`

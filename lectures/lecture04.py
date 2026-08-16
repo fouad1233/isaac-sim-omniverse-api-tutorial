@@ -82,6 +82,9 @@ with open(FLATTENED_PATH) as f:
 ref_size = os.path.getsize(REFERENCED_PATH)
 flat_size = os.path.getsize(FLATTENED_PATH)
 print(f"\nLECTURE: file size -- referencing={ref_size}B  flattened={flat_size}B")
+import numpy as np  # noqa: E402
+
+np.savez(os.path.join(HERE, "data_lecture04.npz"), ref_size=ref_size, flat_size=flat_size, asset_size=os.path.getsize(ASSET_PATH))
 
 # Step 4: the part that actually matters in practice -- what happens if the
 # original asset file goes away? Move it aside, then open EACH scene fresh
