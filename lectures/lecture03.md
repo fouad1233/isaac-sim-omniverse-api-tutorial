@@ -33,12 +33,33 @@ LECTURE:   rotateXYZ=(90.0, 0.0, 0.0)  USD forward=[ 0.  1. -0.]  hand-computed 
 LECTURE:   rotateXYZ=(30.0, 45.0, 60.0)  USD forward=[-0.739 -0.28  -0.612]  hand-computed Rz.Ry.Rx forward=[-0.739 -0.28  -0.612]  match=True
 
 LECTURE: all cases matched -- R = Rz(rz) . Ry(ry) . Rx(rx) is confirmed, not assumed
+LECTURE: holding the window open for 5s -- look at it now
 ```
 
 If any line said `match=False`, the `assert` right after it would have
-crashed the script — nothing here is printed on faith.
+crashed the script — nothing here is printed on faith. If you're running
+with a real display attached, the window also shows a small orange box
+sitting at `(1, 2, 0.5)`, rotated 90° about Z, for five seconds before the
+script exits.
 
 ## Walking through it
+
+**This lecture uses `ctx.new_stage()`, not the raw `Usd.Stage` API Lecture 2
+taught, and that's not a stylistic swap.** Lecture 2 built a Stage with
+`Usd.Stage.CreateNew()` on purpose, to show that a Stage exists
+independently of any viewport. That independence is exactly the wrong
+property here: this lecture runs with `headless=False` so you can watch a
+box actually rotate, and a Stage built with the raw API is never shown by
+the GUI window — the window only ever renders whatever
+`omni.usd.get_context()` holds, which is a different object entirely.
+`ctx.new_stage()` creates the Stage *inside* the context to begin with, so
+`/World/Thing` and its box show up the moment they're defined, no extra
+step required. (An earlier version of this lecture used
+`Usd.Stage.CreateInMemory()`, like Lecture 2's file-backed stage but never
+touching disk — same disconnect, same fix.) The `Box` under `/World/Thing`
+is new for the same reason: an `Xform` alone has no geometry, so even with
+the viewport connected there was nothing shaped to actually look at while
+the matrix math below was proving itself in the terminal.
 
 **`XformCommonAPI` hides an ordered op stack.** `SetTranslate`, `SetRotate`,
 `SetScale` don't write to three independent slots — they author `xformOp:

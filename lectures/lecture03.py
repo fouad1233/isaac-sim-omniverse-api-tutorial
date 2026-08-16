@@ -6,14 +6,26 @@ Run it:
 
 from isaacsim import SimulationApp
 
-kit = SimulationApp({"headless": True})
+kit = SimulationApp({"headless": False})
 
 import math  # noqa: E402
+import time  # noqa: E402
 
 import numpy as np  # noqa: E402
+import omni.usd  # noqa: E402
 from pxr import Usd, UsdGeom  # noqa: E402
 
-stage = Usd.Stage.CreateInMemory()
+# Lecture 2 used the raw Usd.Stage.CreateNew()/CreateInMemory() API on
+# purpose, to show a Stage as an object independent of any viewport. That
+# independence is exactly why it's the wrong call here: this lecture runs
+# with headless=False so you can watch a shape rotate, and a Stage built
+# that way is NEVER shown by the GUI window -- the viewport only ever
+# renders whatever omni.usd.get_context() holds. ctx.new_stage() creates
+# the Stage IN the context to begin with, so anything defined on it below
+# shows up immediately.
+ctx = omni.usd.get_context()
+ctx.new_stage()
+stage = ctx.get_stage()
 UsdGeom.SetStageUpAxis(stage, UsdGeom.Tokens.z)
 
 # Step 1: translate / rotate / scale, the way you'll do it in every later
@@ -26,6 +38,17 @@ xf = UsdGeom.XformCommonAPI(thing)
 xf.SetTranslate((1.0, 2.0, 0.5))
 xf.SetRotate((0.0, 0.0, 90.0))  # degrees; this tuple is (rotateX, rotateY, rotateZ)
 xf.SetScale((1.0, 1.0, 1.0))
+
+# An Xform alone has no geometry -- nothing to actually see. This Cube is
+# purely so the window shows a shape instead of an invisible transform
+# node; everything the rest of this lecture proves is about /World/Thing's
+# matrix, not about the cube itself.
+box = UsdGeom.Cube.Define(stage, "/World/Thing/Box")
+box.CreateSizeAttr(1.0)
+box.CreateDisplayColorAttr([(0.9, 0.3, 0.1)])
+
+for _ in range(10):
+    kit.update()
 
 world_matrix = thing.ComputeLocalToWorldTransform(Usd.TimeCode.Default())
 print("LECTURE: world matrix after translate=(1,2,0.5), rotateZ=90:")
@@ -101,5 +124,16 @@ for rx, ry, rz in test_cases:
     stage.RemovePrim(probe.GetPath())
 
 print("\nLECTURE: all cases matched -- R = Rz(rz) . Ry(ry) . Rx(rx) is confirmed, not assumed")
+
+# kit.update() runs as fast as it can (hundreds of calls/sec) whether or
+# not a window is attached -- it does NOT pace itself to real time. Without
+# this, the window would appear and `kit.close()` would tear it back down
+# again well under a second later, too fast to actually look at the
+# rotated box.
+HOLD_SECONDS = 5.0
+print(f"LECTURE: holding the window open for {HOLD_SECONDS:.0f}s -- look at it now")
+t_end = time.time() + HOLD_SECONDS
+while time.time() < t_end:
+    kit.update()
 
 kit.close()

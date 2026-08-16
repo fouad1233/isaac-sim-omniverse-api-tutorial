@@ -9,10 +9,12 @@ afterwards -- that's half the point of this lecture.
 
 from isaacsim import SimulationApp
 
-kit = SimulationApp({"headless": True})
+kit = SimulationApp({"headless": False})  # headless=False so you can watch the window appear
 
 import os  # noqa: E402
+import time  # noqa: E402
 
+import omni.usd  # noqa: E402
 from pxr import Usd, UsdGeom  # noqa: E402
 
 OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output_lecture02.usda")
@@ -67,5 +69,27 @@ with open(OUT_PATH) as f:
 print("LECTURE: first 15 lines of the saved file:")
 for line in saved_text.splitlines()[:15]:
     print(f"LECTURE:   {line}")
+
+# The `stage` object above lives only in this Python process -- it was
+# never handed to the UsdContext, which is the thing that actually drives
+# the GUI viewport. If you're running with headless=False expecting to see
+# a box appear, checking the viewport's own stage right after
+# Usd.Stage.CreateNew() finds it completely empty: this Stage and the
+# viewport's stage are two different objects that happen to share nothing
+# until you connect them. open_stage() on the file just saved is that
+# connection.
+ctx = omni.usd.get_context()
+ctx.open_stage(OUT_PATH)
+print(f"LECTURE: opened {OUT_PATH} in the GUI viewport")
+
+# kit.update() runs as fast as it can (hundreds of calls/sec) whether or
+# not a window is attached -- it does NOT pace itself to real time. Without
+# this, the window would appear and `kit.close()` would tear it back down
+# again well under a second later, too fast to actually look at.
+HOLD_SECONDS = 5.0
+print(f"LECTURE: holding the window open for {HOLD_SECONDS:.0f}s -- look at it now")
+t_end = time.time() + HOLD_SECONDS
+while time.time() < t_end:
+    kit.update()
 
 kit.close()

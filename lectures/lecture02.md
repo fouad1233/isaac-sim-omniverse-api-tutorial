@@ -42,7 +42,13 @@ LECTURE:           double size = 2
 LECTURE:       }
 LECTURE:   }
 LECTURE:
+LECTURE: opened .../lectures/output_lecture02.usda in the GUI viewport
+LECTURE: holding the window open for 5s -- look at it now
 ```
+
+If you're running with a real display attached, a window opens and a gray
+box sits in it for five seconds before the script exits. If you don't see
+that, read the next section before assuming something's broken.
 
 ## Walking through it
 
@@ -95,6 +101,32 @@ reads and writes either; this course sticks to `.usda` specifically so you
 can open the output and look.) The nesting in the file mirrors the prim
 hierarchy exactly: `Cube "Box"` sits inside `Xform "World"` because
 `/World/Box` sits under `/World`.
+
+**A `Stage` you build this way is invisible in the GUI window until you say
+otherwise, and that's worth understanding rather than working around
+blindly.** `Usd.Stage.CreateNew(path)` gives you a real, fully functional
+Stage object — but it exists only in this Python process. The GUI window
+(`headless=False`) renders whatever `omni.usd.get_context()` holds, and
+that is a *separate* stage that Kit itself owns, empty by default apart
+from its own default cameras and render settings. Querying it right after
+`CreateNew()` finds no `/World`, no `/World/Box` — nothing this script
+built. That's not a bug in USD; a `Usd.Stage` was never meant to assume
+there's a viewport at all (headless server rendering is the far more common
+real-world case). The fix is one explicit line: `omni.usd.get_context().
+open_stage(OUT_PATH)`, handing the just-saved file to the object that
+actually drives the window. Skipping it is exactly what produces the
+symptom "I ran it with `headless=False` and the window is just empty."
+
+**And even with that fixed, the window would close before you could look at
+it.** `kit.update()` doesn't pace itself to real time — it ran at roughly
+250 calls/second in testing, window or no window. Nothing between defining
+the box and `kit.close()` normally takes more than a few milliseconds, so
+without an explicit real-time wait, the window would appear and be torn
+back down again well under a second later. The `while time.time() < t_end`
+loop at the end is what actually holds it open for five real seconds — a
+frame-count loop like Lecture 06 uses elsewhere would not have done this,
+because frame count and wall-clock time are not the same thing once a
+window's involved.
 
 ## Try it yourself
 
