@@ -65,6 +65,36 @@ script with the generated config and confirming zero unresolved imports —
 then deliberately re-adding the bootstrap directory and watching the same
 imports break, to isolate the actual cause rather than guess at it.
 
+**A third trap, one symbol wide, hiding under the second one.** Excluding
+`python_packages/` fixes `isaacsim.sensors`, `isaacsim.core`, every
+dotted submodule — but every single lecture in this course starts with
+`from isaacsim import SimulationApp`, the bare top-level import, and that
+one still failed after the fix above: "SimulationApp" is unknown import
+symbol, while `Camera`, `Lidar`, everything else resolved fine right next
+to it. The cause is specific rather than structural: the excluded
+bootstrap file doesn't expose `SimulationApp` with a static `from .x
+import y` a type checker can trace to the real class — it does `AppFramework,
+SimulationApp = expose_api()`, a runtime function call, so even a checker
+that *could* see that file has nothing to statically follow. The real
+class lives in `isaacsim.simulation_app.simulation_app.SimulationApp`,
+already reachable through the submodule import — just not through the
+top-level one every lecture actually uses.
+
+The fix is a one-symbol type stub, not another entry in `extraPaths`:
+`tools/setup_vscode.py` now also writes `.vscode/typings/isaacsim/__init__.pyi`
+containing exactly
+`from isaacsim.simulation_app import AppFramework as AppFramework, SimulationApp as SimulationApp`,
+and points `python.analysis.stubPath` at that directory. A `.pyi` stub
+resolved through `stubPath` is a separate lookup from the `extraPaths`
+namespace-package merge — it can claim the one symbol `isaacsim` needs at
+the top level without reintroducing the "regular `__init__.py` blocks the
+merge" problem the real bootstrap file causes. Verified the same way as
+the trap above: `pyright` against all 19 lecture scripts reports the
+`SimulationApp` import as `type[SimulationApp]` (not `Unknown`) in every
+one, and removing just the stub reproduces "unknown import symbol" in
+all 19, with the other 103 pre-existing diagnostics (incomplete `pxr`/
+`numpy` type stubs, unrelated to this fix) identical either way.
+
 If you're not on VS Code, the underlying fact still matters: any tool that
 does static import resolution (pyright standalone, mypy, an IDE's "jump to
 source") needs this same fragment list, built the same way. Read

@@ -44,6 +44,34 @@ def find_package_roots(isaac_sim_path: Path) -> list[str]:
     return roots
 
 
+def write_simulation_app_stub(vscode_dir: Path) -> str:
+    """A one-symbol stub so `from isaacsim import SimulationApp` resolves too.
+
+    Excluding python_packages/ (see the comment above) fixes every
+    isaacsim.* submodule except this exact top-level import, because
+    that file exposes SimulationApp with `AppFramework, SimulationApp =
+    expose_api()` -- a runtime function call, not a static `from .x import
+    y` a type checker can trace back to the real class in
+    isaacsim.simulation_app.simulation_app, even when that file IS on
+    extraPaths. A `.pyi` stub is the standard fix for exactly this shape
+    of problem: it's a pure type-checking overlay (python.analysis.stubPath),
+    resolved separately from extraPaths' namespace-package merge, so it
+    can claim the single symbol `isaacsim` needs at the top level without
+    reintroducing the "regular __init__.py blocks the merge" problem the
+    real bootstrap file causes. Confirmed with pyright directly: without
+    this stub, `from isaacsim import SimulationApp` reports "unknown
+    import symbol" while every other isaacsim.* import already resolves;
+    with it, zero unresolved imports across every lecture script.
+    """
+    stub_dir = vscode_dir / "typings" / "isaacsim"
+    stub_dir.mkdir(parents=True, exist_ok=True)
+    stub_path = stub_dir / "__init__.pyi"
+    stub_path.write_text(
+        "from isaacsim.simulation_app import AppFramework as AppFramework, SimulationApp as SimulationApp\n"
+    )
+    return str(vscode_dir / "typings")
+
+
 def main() -> None:
     if len(sys.argv) != 2:
         print(__doc__)
@@ -96,14 +124,18 @@ def main() -> None:
     if settings_path.is_file():
         settings = json.loads(settings_path.read_text())
 
+    stub_path = write_simulation_app_stub(vscode_dir)
+
     settings["python.defaultInterpreterPath"] = str(python_exe)
     settings["python.analysis.extraPaths"] = extra_paths
+    settings["python.analysis.stubPath"] = stub_path
     # Kit's own packages use it; without this Pylance flags half the codebase
     # as an error before it even gets to your own files.
     settings["python.analysis.diagnosticMode"] = "openFilesOnly"
 
     settings_path.write_text(json.dumps(settings, indent=2) + "\n")
     print(f"Wrote {settings_path} ({len(extra_paths)} extraPaths total)")
+    print(f"Wrote {stub_path}/isaacsim/__init__.pyi (fixes 'from isaacsim import SimulationApp' specifically)")
     print("Reload the VS Code window (Ctrl+Shift+P -> Developer: Reload Window) to pick it up.")
 
 
