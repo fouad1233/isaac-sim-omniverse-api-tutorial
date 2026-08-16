@@ -125,6 +125,47 @@ for rx, ry, rz in test_cases:
 
 print("\nLECTURE: all cases matched -- R = Rz(rz) . Ry(ry) . Rx(rx) is confirmed, not assumed")
 
+# A quick render of /World/Thing/Box, the actual prim translate=(1,2,0.5),
+# rotateZ=90 was applied to above -- so this lecture's .md has the real
+# transformed box to show, not just a printed matrix.
+import os  # noqa: E402
+
+from isaacsim.sensors.camera import Camera  # noqa: E402
+from pxr import UsdLux  # noqa: E402
+
+UsdLux.DistantLight.Define(stage, "/World/Sun").CreateIntensityAttr(3000.0)
+cam_geom = UsdGeom.Camera.Define(stage, "/World/PreviewCam")
+# Same (+5,-5,+4) offset and (60,0,45) aim Lecture 02 used, just re-centered
+# on /World/Thing's position instead of the origin -- the offset direction
+# is what the rotation encodes, not the absolute position, so it still
+# points straight at the box from here.
+UsdGeom.XformCommonAPI(cam_geom).SetTranslate((6.0, -3.0, 4.5))
+UsdGeom.XformCommonAPI(cam_geom).SetRotate((60.0, 0.0, 45.0))
+preview_cam = Camera(prim_path="/World/PreviewCam", resolution=(320, 240))
+preview_cam.initialize()
+
+import omni.timeline  # noqa: E402
+
+timeline = omni.timeline.get_timeline_interface()
+timeline.play()
+rgba = None
+for _ in range(60):
+    kit.update()
+    rgba = preview_cam.get_rgba()
+    if rgba is not None and rgba.size > 0:
+        break
+if rgba is None or rgba.size == 0:
+    raise RuntimeError("preview camera never produced a frame in 60 steps")
+
+from PIL import Image  # noqa: E402
+
+preview_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output_lecture03_preview.png")
+Image.fromarray(rgba, mode="RGBA").save(preview_path)
+print(f"LECTURE: saved preview render to {preview_path}")
+timeline.stop()
+stage.RemovePrim("/World/PreviewCam")
+stage.RemovePrim("/World/Sun")
+
 # kit.update() runs as fast as it can (hundreds of calls/sec) whether or
 # not a window is attached -- it does NOT pace itself to real time. Without
 # this, the window would appear and `kit.close()` would tear it back down

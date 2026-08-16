@@ -43,12 +43,22 @@ LECTURE:       }
 LECTURE:   }
 LECTURE:
 LECTURE: opened .../lectures/output_lecture02.usda in the GUI viewport
+LECTURE: saved preview render to .../lectures/output_lecture02_preview.png
 LECTURE: holding the window open for 5s -- look at it now
 ```
 
 If you're running with a real display attached, a window opens and a gray
 box sits in it for five seconds before the script exits. If you don't see
 that, read the next section before assuming something's broken.
+
+![A rendered preview of the box this lecture defines: a light blue cube seen from an angle, lit by a distant light, on a black background.](figures/lecture02_box_preview.png)
+
+That preview render is the one addition to this lecture that isn't about
+Stage/Prim/Attribute concepts at all — a quick camera pointed at
+`/World/Box` after it's loaded into the GUI viewport's stage, just so
+there's something real to look at instead of an attribute list. Camera
+mechanics are Lecture 07's actual subject; this is only proof the box
+described above is really there.
 
 ## Walking through it
 

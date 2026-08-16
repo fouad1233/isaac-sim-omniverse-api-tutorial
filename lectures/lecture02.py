@@ -82,6 +82,44 @@ ctx = omni.usd.get_context()
 ctx.open_stage(OUT_PATH)
 print(f"LECTURE: opened {OUT_PATH} in the GUI viewport")
 
+# A quick render of the box just defined, purely so this lecture's .md has
+# something real to show rather than asking you to picture a Cube prim
+# from its attribute list. Camera mechanics are Lecture 07's actual
+# subject -- this is the minimum needed to prove the box is really there,
+# not a second lesson.
+gui_stage = ctx.get_stage()
+UsdGeom.Cube(gui_stage.GetPrimAtPath("/World/Box")).CreateDisplayColorAttr([(0.2, 0.6, 1.0)])
+from pxr import UsdLux  # noqa: E402
+UsdLux.DistantLight.Define(gui_stage, "/World/Sun").CreateIntensityAttr(3000.0)
+cam_geom = UsdGeom.Camera.Define(gui_stage, "/World/PreviewCam")
+UsdGeom.XformCommonAPI(cam_geom).SetTranslate((5.0, -5.0, 4.0))
+UsdGeom.XformCommonAPI(cam_geom).SetRotate((60.0, 0.0, 45.0))
+
+from isaacsim.sensors.camera import Camera  # noqa: E402
+
+preview_cam = Camera(prim_path="/World/PreviewCam", resolution=(320, 240))
+preview_cam.initialize()
+
+import omni.timeline  # noqa: E402
+
+timeline = omni.timeline.get_timeline_interface()
+timeline.play()
+rgba = None
+for _ in range(60):
+    kit.update()
+    rgba = preview_cam.get_rgba()
+    if rgba is not None and rgba.size > 0:
+        break
+if rgba is None or rgba.size == 0:
+    raise RuntimeError("preview camera never produced a frame in 60 steps")
+
+from PIL import Image  # noqa: E402
+
+preview_path = os.path.join(os.path.dirname(OUT_PATH), "output_lecture02_preview.png")
+Image.fromarray(rgba, mode="RGBA").save(preview_path)
+print(f"LECTURE: saved preview render to {preview_path}")
+timeline.stop()
+
 # kit.update() runs as fast as it can (hundreds of calls/sec) whether or
 # not a window is attached -- it does NOT pace itself to real time. Without
 # this, the window would appear and `kit.close()` would tear it back down

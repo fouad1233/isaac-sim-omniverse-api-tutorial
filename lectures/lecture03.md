@@ -33,6 +33,7 @@ LECTURE:   rotateXYZ=(90.0, 0.0, 0.0)  USD forward=[ 0.  1. -0.]  hand-computed 
 LECTURE:   rotateXYZ=(30.0, 45.0, 60.0)  USD forward=[-0.739 -0.28  -0.612]  hand-computed Rz.Ry.Rx forward=[-0.739 -0.28  -0.612]  match=True
 
 LECTURE: all cases matched -- R = Rz(rz) . Ry(ry) . Rx(rx) is confirmed, not assumed
+LECTURE: saved preview render to .../lectures/output_lecture03_preview.png
 LECTURE: holding the window open for 5s -- look at it now
 ```
 
@@ -41,6 +42,16 @@ crashed the script — nothing here is printed on faith. If you're running
 with a real display attached, the window also shows a small orange box
 sitting at `(1, 2, 0.5)`, rotated 90° about Z, for five seconds before the
 script exits.
+
+![A rendered preview of /World/Thing/Box from above: an orange diamond-shaped top face on a black background, the result of the translate=(1,2,0.5), rotateZ=90 transform applied earlier in the script.](figures/lecture03_thing_box_preview.png)
+
+That preview is looking almost straight down at the box, which is worth
+being honest about: a cube has 4-fold symmetry around its own vertical
+axis, so this particular viewing angle can't actually show you that a 90°
+Z-rotation happened — it would look identical at 0°. The printed matrices
+and the `match=True` lines above are the real proof; this image is here
+only to confirm the box exists where the math says it does, the same way
+[lecture 2](lecture02.md)'s preview did.
 
 ## Walking through it
 
