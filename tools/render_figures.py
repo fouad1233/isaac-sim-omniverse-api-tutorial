@@ -125,6 +125,29 @@ def render_lecture06(data_path: Path) -> Path | None:
     return out
 
 
+def render_lecture09(data_path: Path) -> Path | None:
+    if not data_path.exists():
+        return None
+    d = np.load(data_path)
+    steps = d["steps"]
+    target = float(d["target_deg"])
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+    ax.axhline(target, color="#666666", linestyle=":", linewidth=1.5, label=f"target ({target:.0f} deg)")
+    ax.plot(steps, d["light_damping"], "o-", c="#1f6feb", linewidth=2, markersize=5, label="damping=5 (light)")
+    ax.plot(steps, d["heavy_damping"], "s-", c="#d1242f", linewidth=2, markersize=5, label="damping=25 (heavy)")
+    ax.set_xlabel("simulation step")
+    ax.set_ylabel("arm angle (deg)")
+    ax.set_title("Lecture 09 -- single-joint drive settling toward a 45 deg target")
+    ax.legend(loc="lower right")
+    ax.grid(True, linewidth=0.3, alpha=0.5)
+    fig.tight_layout()
+    out = FIGURES_DIR / "lecture09_joint_drive_settling.png"
+    fig.savefig(out, dpi=150)
+    plt.close(fig)
+    return out
+
+
 def render_lecture11(data_path: Path) -> Path | None:
     if not data_path.exists():
         return None
@@ -292,6 +315,7 @@ RENDERERS = {
     4: render_lecture04,
     5: render_lecture05,
     6: render_lecture06,
+    9: render_lecture09,
     11: render_lecture11,
     12: render_lecture12,
     15: render_lecture15,

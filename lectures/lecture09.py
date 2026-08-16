@@ -144,4 +144,18 @@ print(f"LECTURE: damping=25 settles at {heavy_damping[max(CHECKPOINTS)]:.3f} deg
       f"(reaches it smoothly, slower, and neither value is exactly "
       f"{TARGET_DEG} -- see lecture09.md)")
 
+import os  # noqa: E402
+
+import numpy as np  # noqa: E402
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+steps = np.array(sorted(light_damping))
+np.savez(
+    os.path.join(HERE, "data_lecture09.npz"),
+    steps=steps,
+    light_damping=np.array([light_damping[s] for s in steps]),
+    heavy_damping=np.array([heavy_damping[s] for s in steps]),
+    target_deg=TARGET_DEG,
+)
+
 kit.close()

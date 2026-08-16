@@ -38,6 +38,12 @@ LECTURE: damping=5 settles at 45.008 deg (reaches the target fast)
 LECTURE: damping=25 settles at 44.943 deg (reaches it smoothly, slower, and neither value is exactly 45.0 -- see lecture09.md)
 ```
 
+![Line chart of arm angle over simulation step for two damping values: damping=5 shoots up close to the 45 degree target within about 15 steps, while damping=25 climbs the same S-curve shape but takes roughly 80 steps to settle.](figures/lecture09_joint_drive_settling.png)
+
+Same numbers as the table above, but the shape is the actual point: both
+curves head toward the dotted target line and both stop just short of it,
+one fast, one gradual.
+
 ## Walking through it
 
 **Four pieces build one articulation, and each does a distinct job.** The
