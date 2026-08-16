@@ -33,14 +33,16 @@ LECTURE: 50x brighter dome changed interior brightness by +0.00 (barely, if at a
 LECTURE: one modest interior light changed it by +30.96 (placement was)
 ```
 
-Three saved PNGs tell the same story visually:
-[`output_lecture08_a_dome_only.png`](output_lecture08_a_dome_only.png) and
-[`output_lecture08_b_dome_bright.png`](output_lecture08_b_dome_bright.png)
-are both flat black — not "dim," literally `0.00` mean brightness, 50x
-intensity difference between them and no visible difference at all.
-[`output_lecture08_c_interior_light.png`](output_lecture08_c_interior_light.png)
-shows the interior light itself as a glowing spot and the target cube's
-near face dimly visible next to it — the *only* case with anything to see.
+Three saved frames tell the same story visually:
+
+| A: dome only (intensity 1000) | B: dome only (intensity 50000) | C: dome 1000 + interior light |
+|---|---|---|
+| ![Case A: flat black frame, the dome light at its original intensity contributing nothing visible inside the sealed room.](figures/lecture08_a_dome_only.png) | ![Case B: still flat black despite the dome light's intensity being turned up 50x -- confirming intensity was never the problem.](figures/lecture08_b_dome_bright.png) | ![Case C: the room's near wall dimly visible and a bright glowing spot where the interior point light sits, the only case with anything visible at all.](figures/lecture08_c_interior_light.png) |
+
+A and B are both flat black — not "dim," literally `0.00` mean brightness,
+a 50x intensity difference between them and no visible difference at all.
+C shows the interior light itself as a glowing spot and the room's near
+wall dimly visible next to it — the *only* case with anything to see.
 
 ## Walking through it
 

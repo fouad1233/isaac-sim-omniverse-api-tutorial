@@ -26,11 +26,12 @@ LECTURE: saved frame mean brightness = 153.03 (not 0.00 -- the light is doing re
 LECTURE: saved <repo>/lectures/output_lecture10_capstone.png
 ```
 
-And [`output_lecture10_capstone.png`](output_lecture10_capstone.png): a
-blue base sitting on a gray pedestal, an orange arm swung up to about 60°
-from vertical, clearly lit against a visible floor and background — not
-the flat black Lecture 08 produced when the only light was a dome outside
-a sealed room.
+And the saved frame itself: a blue base sitting on a gray pedestal, an
+orange arm swung up to about 60° from vertical, clearly lit against a
+visible floor and background — not the flat black Lecture 08 produced when
+the only light was a dome outside a sealed room.
+
+![The saved capstone frame: a blue base on a gray pedestal with an orange arm swung up to about 60 degrees, lit clearly against a visible floor and background.](figures/lecture10_capstone.png)
 
 ## Walking through it
 

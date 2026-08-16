@@ -32,9 +32,11 @@ LECTURE: saved <repo>/lectures/output_lecture07_top_down.png
 LECTURE: red-pixel centroid=(159.5, 119.5), image center=(160.0, 120.0) -- 28898 red pixels found
 ```
 
-And `output_lecture07_top_down.png` itself: a red square dead-center on a
-black background — a top-down shot of a cube, from a camera aimed straight
-down at it.
+And the saved frame itself: a red square dead-center on a black
+background — a top-down shot of a cube, from a camera aimed straight down
+at it.
+
+![The saved camera frame: a red square centered on a black background, the top-down view of a red cube captured by the script's camera.](figures/lecture07_top_down.png)
 
 ## Walking through it
 
