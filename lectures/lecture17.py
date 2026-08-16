@@ -34,6 +34,8 @@ callback (`SimulationManager.register_callback(..., POST_PHYSICS_STEP)`)
 so it runs exactly once per physics tick regardless of render pacing.
 """
 
+import os
+
 import numpy as np
 from isaacsim import SimulationApp
 
@@ -46,7 +48,11 @@ from isaacsim.core.rendering_manager import RenderingManager  # noqa: E402
 from isaacsim.core.simulation_manager import SimulationManager  # noqa: E402
 from isaacsim.core.simulation_manager.impl.isaac_events import IsaacEvents  # noqa: E402
 from isaacsim.robot.policy.examples.robots import H1FlatTerrainPolicy  # noqa: E402
-from pxr import UsdGeom, UsdPhysics  # noqa: E402
+from isaacsim.sensors.camera import Camera  # noqa: E402
+from PIL import Image  # noqa: E402
+from pxr import UsdGeom, UsdLux, UsdPhysics  # noqa: E402
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 torch = import_module("torch")
 
@@ -79,6 +85,30 @@ material.CreateStaticFrictionAttr(1.0)
 material.CreateDynamicFrictionAttr(0.8)
 material.CreateRestitutionAttr(0.0)
 
+# A light and a camera, purely so this lecture's .md has a real frame to
+# show -- same key + fill dome pattern Lecture 10's capstone used, and the
+# same offset-based aim Lectures 02/03 verified: camera placed at
+# target + (5,-5,4), rotate=(60,0,45), looks straight at whatever "target"
+# is regardless of where that target sits in the world.
+key_light = UsdLux.SphereLight.Define(stage, "/World/KeyLight")
+key_light.CreateRadiusAttr(0.3)
+key_light.CreateIntensityAttr(30000.0)
+UsdGeom.XformCommonAPI(key_light).SetTranslate((-1.0, 0.75, 3.5))
+
+fill_dome = UsdLux.DomeLight.Define(stage, "/World/FillDome")
+fill_dome.CreateIntensityAttr(400.0)
+
+# Midpoint between where standing stays (near its start) and where walking
+# ends up after ~1.3m of forward travel -- and a wider offset than Lectures
+# 02/03/10 used, because two robots 1.5m apart need more of the frame than
+# one box does at the same relative distance.
+CAM_TARGET = (0.65, 0.75, 1.0)
+cam_geom = UsdGeom.Camera.Define(stage, "/World/Cam")
+UsdGeom.XformCommonAPI(cam_geom).SetTranslate(tuple(t + o for t, o in zip(CAM_TARGET, (9.0, -9.0, 7.0))))
+UsdGeom.XformCommonAPI(cam_geom).SetRotate((60.0, 0.0, 45.0))
+overview_cam = Camera(prim_path="/World/Cam", resolution=(480, 360))
+overview_cam.initialize()
+
 # Physics steps at 200Hz; rendering only needs to keep up every 8th
 # physics tick (25Hz) since this runs headless. This is the setting that
 # makes a plain per-iteration loop unsafe -- see the module docstring.
@@ -109,6 +139,8 @@ pos0_standing = None
 pos0_walking = None
 min_height_standing = float("inf")
 min_height_walking = float("inf")
+TRACE_EVERY = 5  # ~120 samples over 600 steps -- enough for a smooth curve, small enough to dump cheaply
+trace_t, trace_x_standing, trace_x_walking = [], [], []
 
 
 def on_physics_step(step_size: float, _context: object) -> None:
@@ -123,10 +155,16 @@ def on_physics_step(step_size: float, _context: object) -> None:
     standing.forward(step_size, standing_command)
     walking.forward(step_size, walking_command)
     state["step"] += 1
-    h_standing = float(standing.robot.get_world_poses()[0].numpy()[0][2])
-    h_walking = float(walking.robot.get_world_poses()[0].numpy()[0][2])
+    pos_standing = standing.robot.get_world_poses()[0].numpy()[0]
+    pos_walking = walking.robot.get_world_poses()[0].numpy()[0]
+    h_standing = float(pos_standing[2])
+    h_walking = float(pos_walking[2])
     min_height_standing = min(min_height_standing, h_standing)
     min_height_walking = min(min_height_walking, h_walking)
+    if state["step"] % TRACE_EVERY == 0:
+        trace_t.append(state["step"] * step_size)
+        trace_x_standing.append(float(pos_standing[0]) - float(pos0_standing[0]))
+        trace_x_walking.append(float(pos_walking[0]) - float(pos0_walking[0]))
 
 
 SimulationManager.register_callback(on_physics_step, IsaacEvents.POST_PHYSICS_STEP)
@@ -160,5 +198,27 @@ assert min_height_walking > 0.6, "walking robot fell over"
 assert disp_walking_forward > disp_standing * 3, "walking robot didn't move meaningfully more than the standing one"
 print("LECTURE: both robots stayed upright, and the walking command produced clearly more "
       "forward motion than standing still -- verified against real physics output, not assumed")
+
+# A real captured frame of the final pose, and the position traces recorded
+# during the run above -- so this lecture's .md can show what "stayed
+# upright" and "walked forward" actually looked like, not just assert it.
+rgba = None
+for _ in range(60):
+    kit.update()
+    candidate = overview_cam.get_rgba()
+    if candidate is not None and candidate.size > 0:
+        rgba = candidate
+if rgba is None:
+    raise RuntimeError("overview camera never produced a frame")
+overview_path = os.path.join(HERE, "output_lecture17_overview.png")
+Image.fromarray(rgba, mode="RGBA").save(overview_path)
+print(f"LECTURE: saved overview frame to {overview_path}")
+
+np.savez(
+    os.path.join(HERE, "data_lecture17.npz"),
+    t=np.array(trace_t),
+    x_standing=np.array(trace_x_standing),
+    x_walking=np.array(trace_x_walking),
+)
 
 kit.close()

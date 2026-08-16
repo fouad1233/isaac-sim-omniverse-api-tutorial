@@ -32,6 +32,16 @@ LECTURE: naive implied distance at 0.5 m/s x 3.0s = 1.500 m -- compare to the 1.
 LECTURE: both robots stayed upright, and the walking command produced clearly more forward motion than standing still -- verified against real physics output, not assumed
 ```
 
+![A rendered overview frame of both H1 robots on the flat ground plane, each mid-stride with a foot lifted, roughly 1.3m apart, lit by a key light and dim fill dome.](figures/lecture17_h1_overview.png)
+
+![Line chart of +X displacement over time for both robots, plus a dotted "naive 0.5 m/s x time" reference line: the standing robot's line stays nearly flat near zero while the walking robot's line curves upward, starting below the naive line during ramp-up and tracking roughly parallel to it afterward.](figures/lecture17_h1_displacement.png)
+
+The chart's x-axis runs a bit past the printed `3.0s` because the trace
+kept recording through the extra settle steps used to grab the frame
+above — the shape is what matters: a visible ramp-up before the walking
+policy reaches its commanded speed, exactly the "ramp-up + real tracking
+error" the printed comparison to the naive line already named.
+
 ## Walking through it
 
 **The collapse this script produced first, and why it looked plausible.**

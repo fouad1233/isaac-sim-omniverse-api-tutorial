@@ -172,6 +172,29 @@ def render_lecture14(data_path: Path) -> Path | None:
     return out
 
 
+def render_lecture17(data_path: Path) -> Path | None:
+    if not data_path.exists():
+        return None
+    d = np.load(data_path)
+    t = d["t"]
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+    ax.plot(t, d["x_standing"], "o-", c="#2b2b2b", linewidth=2, markersize=3, label="standing (command=[0,0,0])")
+    ax.plot(t, d["x_walking"], "s-", c="#1f6feb", linewidth=2, markersize=3, label="walking (command=[0.5,0,0])")
+    naive = 0.5 * t
+    ax.plot(t, naive, ":", c="#d1242f", linewidth=1.5, label="naive 0.5 m/s x time")
+    ax.set_xlabel("sim time (s)")
+    ax.set_ylabel("+X displacement from start (m)")
+    ax.set_title("Lecture 17 -- H1 forward displacement, same policy, two commands")
+    ax.legend(loc="upper left")
+    ax.grid(True, linewidth=0.3, alpha=0.5)
+    fig.tight_layout()
+    out = FIGURES_DIR / "lecture17_h1_displacement.png"
+    fig.savefig(out, dpi=150)
+    plt.close(fig)
+    return out
+
+
 def render_lecture11(data_path: Path) -> Path | None:
     if not data_path.exists():
         return None
@@ -342,6 +365,7 @@ RENDERERS = {
     9: render_lecture09,
     11: render_lecture11,
     14: render_lecture14,
+    17: render_lecture17,
     12: render_lecture12,
     15: render_lecture15,
     16: render_lecture16,
