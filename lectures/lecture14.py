@@ -147,4 +147,10 @@ labels = ["center", "top-left", "top-right", "bottom-left", "bottom-right"]
 for label, px, wp in zip(labels, sample_px, np.array(world_pts)):
     print(f"LECTURE:   {label:12s} pixel=({px[0]:.0f},{px[1]:.0f}) -> world=({wp[0]:+.3f}, {wp[1]:+.3f}, {wp[2]:+.3f})")
 
+np.savez(
+    os.path.join(HERE, "data_lecture14.npz"),
+    depth_plane=depth_plane,
+    depth_cam=depth_cam,
+)
+
 kit.close()

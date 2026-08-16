@@ -38,6 +38,15 @@ LECTURE:   bottom-left  pixel=(0,239) -> world=(-1.048, -0.779, -0.000)
 LECTURE:   bottom-right pixel=(319,239) -> world=(+1.041, -0.779, -0.000)
 ```
 
+![Two heatmaps of the same 320x240 depth frame on one shared color scale. distance_to_image_plane is a single flat purple color across the whole image (5.000m everywhere). distance_to_camera shows a dark purple center brightening outward to yellow at the corners (5.000m to 5.168m).](figures/lecture14_depth_conventions.png)
+
+Both heatmaps share one color scale, which is what makes the left panel's
+flatness legible as a real measurement rather than a rendering
+coincidence: `distance_to_image_plane` genuinely has nowhere to go, while
+`distance_to_camera` visibly grows in every direction away from the
+center pixel — the exact `sqrt(x²+y²+1)` ray-length effect the numbers
+above quantify.
+
 ## Walking through it
 
 **A flat, perpendicular floor makes the two depth conventions cleanly

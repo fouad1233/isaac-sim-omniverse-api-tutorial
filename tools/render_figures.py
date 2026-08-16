@@ -148,6 +148,30 @@ def render_lecture09(data_path: Path) -> Path | None:
     return out
 
 
+def render_lecture14(data_path: Path) -> Path | None:
+    if not data_path.exists():
+        return None
+    d = np.load(data_path)
+    depth_plane, depth_cam = d["depth_plane"], d["depth_cam"]
+    vmin = min(depth_plane.min(), depth_cam.min())
+    vmax = max(depth_plane.max(), depth_cam.max())
+
+    fig, axes = plt.subplots(1, 2, figsize=(11, 5))
+    im0 = axes[0].imshow(depth_plane, cmap="viridis", vmin=vmin, vmax=vmax)
+    axes[0].set_title(f"distance_to_image_plane\nmin={depth_plane.min():.3f} max={depth_plane.max():.3f}")
+    im1 = axes[1].imshow(depth_cam, cmap="viridis", vmin=vmin, vmax=vmax)
+    axes[1].set_title(f"distance_to_camera\nmin={depth_cam.min():.3f} max={depth_cam.max():.3f}")
+    for ax in axes:
+        ax.set_xlabel("u (px)")
+        ax.set_ylabel("v (px)")
+    fig.colorbar(im1, ax=axes, shrink=0.8, label="depth (m)")
+    fig.suptitle("Lecture 14 -- same flat floor, two depth conventions, same color scale")
+    out = FIGURES_DIR / "lecture14_depth_conventions.png"
+    fig.savefig(out, dpi=150)
+    plt.close(fig)
+    return out
+
+
 def render_lecture11(data_path: Path) -> Path | None:
     if not data_path.exists():
         return None
@@ -317,6 +341,7 @@ RENDERERS = {
     6: render_lecture06,
     9: render_lecture09,
     11: render_lecture11,
+    14: render_lecture14,
     12: render_lecture12,
     15: render_lecture15,
     16: render_lecture16,
