@@ -36,6 +36,12 @@ LECTURE: implicit (no scene) trace exactly matches explicit g=9.81 trace: True
 LECTURE: (that's not a coincidence -- see lecture05.md)
 ```
 
+![Line chart of box height over simulation step for three gravity setups: the "no scene" and "g=9.81" traces sit exactly on top of each other, while "g=2.0" falls visibly slower and lands later.](figures/lecture05_falling_box_height.png)
+
+The black and blue lines above aren't just close, they're the same
+line — that's the implicit-fallback-scene finding made visible instead of
+argued from a table of four-decimal numbers.
+
 ## Walking through it
 
 **Three separate opt-ins, and it's worth knowing which is which.**

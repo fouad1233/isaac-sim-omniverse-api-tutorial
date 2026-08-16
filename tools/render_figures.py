@@ -68,6 +68,28 @@ def render_lecture04(data_path: Path) -> Path | None:
     return out
 
 
+def render_lecture05(data_path: Path) -> Path | None:
+    if not data_path.exists():
+        return None
+    d = np.load(data_path)
+    steps = d["steps"]
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+    ax.plot(steps, d["none_heights"], "o-", c="#2b2b2b", linewidth=2, markersize=5, label="no PhysicsScene (implicit)")
+    ax.plot(steps, d["earth_heights"], "x--", c="#1f6feb", linewidth=1.5, markersize=7, label="PhysicsScene, g=9.81")
+    ax.plot(steps, d["weak_heights"], "s:", c="#d1242f", linewidth=1.5, markersize=5, label="PhysicsScene, g=2.0")
+    ax.set_xlabel("simulation step")
+    ax.set_ylabel("box height, z (m)")
+    ax.set_title("Lecture 05 -- falling box height over time\nsame start height 2.0 m, three gravity setups")
+    ax.legend(loc="upper right")
+    ax.grid(True, linewidth=0.3, alpha=0.5)
+    fig.tight_layout()
+    out = FIGURES_DIR / "lecture05_falling_box_height.png"
+    fig.savefig(out, dpi=150)
+    plt.close(fig)
+    return out
+
+
 def render_lecture11(data_path: Path) -> Path | None:
     if not data_path.exists():
         return None
@@ -233,6 +255,7 @@ def render_lecture19(data_path: Path) -> Path | None:
 
 RENDERERS = {
     4: render_lecture04,
+    5: render_lecture05,
     11: render_lecture11,
     12: render_lecture12,
     15: render_lecture15,

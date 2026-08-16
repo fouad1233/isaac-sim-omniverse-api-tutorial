@@ -101,4 +101,18 @@ matches_earth = all(
 print(f"\nLECTURE: implicit (no scene) trace exactly matches explicit g=9.81 trace: {matches_earth}")
 print("LECTURE: (that's not a coincidence -- see lecture05.md)")
 
+import os  # noqa: E402
+
+import numpy as np  # noqa: E402
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+steps = np.array(sorted(none_trace))
+np.savez(
+    os.path.join(HERE, "data_lecture05.npz"),
+    steps=steps,
+    none_heights=np.array([none_trace[s] for s in steps]),
+    earth_heights=np.array([earth_trace[s] for s in steps]),
+    weak_heights=np.array([weak_trace[s] for s in steps]),
+)
+
 kit.close()
