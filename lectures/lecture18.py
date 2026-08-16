@@ -145,6 +145,13 @@ print(f"LECTURE: nominal wheel_radius={NOMINAL_WHEEL_RADIUS:.4f} m (NVIDIA's exa
 # real physics (wheel radius error, wheel slip, integration step size) --
 # not a mismatched formula.
 # ---------------------------------------------------------------------------
+# (steps, v_cmd m/s, w_cmd rad/s) -- forward, turn in place, forward again.
+SEGMENTS = [
+    (120, 0.15, 0.0),
+    (105, 0.0, 1.0),
+    (120, 0.15, 0.0),
+]
+
 gt_x0, gt_y0, gt_theta0 = world_pose(jetbot)
 odo_nominal = {"x": gt_x0, "y": gt_y0, "theta": gt_theta0}
 odo_calibrated = {"x": gt_x0, "y": gt_y0, "theta": gt_theta0}
@@ -160,11 +167,9 @@ def dead_reckon(state, omega_left, omega_right, wheel_radius):
     state["theta"] += w * DT
 
 
-SEGMENTS = [  # (steps, linear_speed m/s, angular_speed rad/s)
-    (100, 0.15, 0.0),
-    (100, 0.05, 1.0),
-    (100, 0.15, 0.0),
-]
+traj_gt = [(gt_x0, gt_y0)]
+traj_nominal = [(gt_x0, gt_y0)]
+traj_calibrated = [(gt_x0, gt_y0)]
 
 for steps, v_cmd, w_cmd in SEGMENTS:
     for _ in range(steps):
@@ -174,6 +179,10 @@ for steps, v_cmd, w_cmd in SEGMENTS:
         actual = jetbot.get_dof_velocities(dof_indices=wheel_dof_indices).numpy()[0]  # [left, right] rad/s
         dead_reckon(odo_nominal, actual[0], actual[1], NOMINAL_WHEEL_RADIUS)
         dead_reckon(odo_calibrated, actual[0], actual[1], calibrated_wheel_radius)
+        gt_x_step, gt_y_step, _ = world_pose(jetbot)
+        traj_gt.append((gt_x_step, gt_y_step))
+        traj_nominal.append((odo_nominal["x"], odo_nominal["y"]))
+        traj_calibrated.append((odo_calibrated["x"], odo_calibrated["y"]))
 
 gt_x1, gt_y1, gt_theta1 = world_pose(jetbot)
 
@@ -202,5 +211,15 @@ print(f"LECTURE: the calibrated radius made position error {err_calibrated / err
       f"12.3% straight-line overshoot calibration measured isn't necessarily a wheel-geometry error at all -- it "
       f"could just as easily be a velocity-drive transient specific to that motion, which doesn't apply the same "
       f"way once the wheels are commanded asymmetrically for a turn")
+
+import os  # noqa: E402
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+np.savez(
+    os.path.join(HERE, "data_lecture18.npz"),
+    traj_gt=np.array(traj_gt),
+    traj_nominal=np.array(traj_nominal),
+    traj_calibrated=np.array(traj_calibrated),
+)
 
 kit.close()

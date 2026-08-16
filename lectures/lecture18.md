@@ -27,11 +27,21 @@ is the actual lesson.
 LECTURE: jetbot dof_names=['left_wheel_joint', 'right_wheel_joint'], resolved wheel_dof_indices=[0, 1]
 LECTURE: calibration -- commanded 0.1 m/s for 3.00s, naive implied distance=0.3000 m, actually measured=0.3369 m (0.1123 m/s, +12.3% vs commanded)
 LECTURE: nominal wheel_radius=0.0300 m (NVIDIA's example value) -- calibrated wheel_radius=0.0337 m (measured from this run's actual physics)
-LECTURE: ground truth final pose      -> x=0.6293 y=0.3338 theta=98.68 deg
-LECTURE: odometry (nominal radius)    -> x=0.6299 y=0.3273 theta=97.26 deg -- position error=0.0065 m
-LECTURE: odometry (calibrated radius) -> x=0.5948 y=0.3575 theta=109.30 deg -- position error=0.0419 m
-LECTURE: the calibrated radius made position error 6.4x WORSE, not better -- it overcorrected theta by ~12.3% ...
+LECTURE: ground truth final pose      -> x=0.5921 y=0.3181 theta=104.09 deg
+LECTURE: odometry (nominal radius)    -> x=0.6120 y=0.3225 theta=99.51 deg -- position error=0.0203 m
+LECTURE: odometry (calibrated radius) -> x=0.5699 y=0.3423 theta=111.83 deg -- position error=0.0328 m
+LECTURE: the calibrated radius made position error 1.6x WORSE, not better -- it overcorrected theta by ~12.3% ...
 ```
+
+![Top-down trajectory plot: ground truth, nominal-radius odometry, and calibrated-radius odometry all overlap during the initial straight run, then fan apart through the turn -- the nominal-radius estimate (green dashed) tracks close to ground truth (blue) through the end, while the calibrated-radius estimate (red dotted) swings visibly wide of both.](figures/lecture18_odometry_comparison.png)
+
+The three lines are identical for the first straight segment — nothing in that
+segment can distinguish the two radii, since Phase A's calibration was
+derived from straight-line motion in the first place. They only separate
+once the turn segment starts feeding the wheel-velocity asymmetry the
+calibrated radius was never tested against, and the calibrated line (red)
+visibly overshoots past the ground-truth end point while the nominal line
+(green) stays close to it.
 
 ## Walking through it
 
@@ -49,11 +59,11 @@ and Phase A alone would call it a success.
 turning (`ω=1.0 rad/s`), then forward again, and dead-reckoning odometry
 from the wheels' *actual* measured velocities (not the commanded ones —
 this matters, see below) with both radii in parallel: the **nominal**
-radius lands within `6.5mm` of the true final position; the
-**calibrated** radius misses by `41.9mm` — six times worse. The
-calibrated estimate's heading (`109.30°`) overshoots the true heading
-(`98.68°`) by almost exactly the `12.3%` correction factor, while the
-nominal estimate's heading (`97.26°`) tracks it closely.
+radius lands within `20.3mm` of the true final position; the
+**calibrated** radius misses by `32.8mm` — about 1.6x worse. The
+calibrated estimate's heading (`111.83°`) overshoots the true heading
+(`104.09°`) by close to the `12.3%` correction factor, while the
+nominal estimate's heading (`99.51°`) tracks it more closely.
 
 **Why: the same constant appears in two different equations, and only
 one of them was tested.** The inverse kinematic model this script uses

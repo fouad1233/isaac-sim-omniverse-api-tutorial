@@ -195,6 +195,31 @@ def render_lecture17(data_path: Path) -> Path | None:
     return out
 
 
+def render_lecture18(data_path: Path) -> Path | None:
+    if not data_path.exists():
+        return None
+    d = np.load(data_path)
+    traj_gt, traj_nominal, traj_calibrated = d["traj_gt"], d["traj_nominal"], d["traj_calibrated"]
+
+    fig, ax = plt.subplots(figsize=(7, 6))
+    ax.plot(traj_gt[:, 0], traj_gt[:, 1], "-", c="#1f6feb", linewidth=2.5, label="ground truth")
+    ax.plot(traj_nominal[:, 0], traj_nominal[:, 1], "--", c="#2da44e", linewidth=2, label="odometry (nominal radius)")
+    ax.plot(traj_calibrated[:, 0], traj_calibrated[:, 1], ":", c="#d1242f", linewidth=2, label="odometry (calibrated radius)")
+    ax.scatter([traj_gt[0, 0]], [traj_gt[0, 1]], marker="o", s=110, c="#1f6feb", zorder=5, label="start")
+    ax.scatter([traj_gt[-1, 0]], [traj_gt[-1, 1]], marker="*", s=200, c="#1f6feb", zorder=5, label="ground-truth end")
+    ax.set_xlabel("x (m)")
+    ax.set_ylabel("y (m)")
+    ax.set_aspect("equal")
+    ax.set_title("Lecture 18 -- Jetbot S-curve: ground truth vs. two odometry estimates")
+    ax.legend(loc="best", fontsize=8)
+    ax.grid(True, linewidth=0.3, alpha=0.5)
+    fig.tight_layout()
+    out = FIGURES_DIR / "lecture18_odometry_comparison.png"
+    fig.savefig(out, dpi=150)
+    plt.close(fig)
+    return out
+
+
 def render_lecture11(data_path: Path) -> Path | None:
     if not data_path.exists():
         return None
@@ -370,6 +395,7 @@ RENDERERS = {
     15: render_lecture15,
     16: render_lecture16,
     19: render_lecture19,
+    18: render_lecture18,
 }
 
 
