@@ -37,6 +37,18 @@ LECTURE: [drive] odometry-believed pose   -> x=1.799 y=2.299 theta=49.1 deg -- 0
 LECTURE: the plan built from one lidar scan, executed with only wheel velocity commands and no access to ground truth during the drive, actually got the robot to the goal -- verified from the simulated pose, not assumed from the planner's output
 ```
 
+![Rendered occupancy grid with the A* planned path, its simplified waypoints, and two driven trajectories overlaid: a solid blue ground-truth line that closely follows the plan, and a dotted red odometry-believed line that visibly drifts away from it by the end.](figures/lecture19_capstone_map_path_drive.png)
+
+Three independent things are drawn on top of one map here: the dashed
+planned path (Phase 2's A* output, unchanged since Lecture 16), the solid
+blue line (the Jetbot's real simulated pose, sampled every physics step of
+Phase 3's drive), and the dotted red line (the odometry belief computed
+alongside it, from wheel velocities alone). The blue line tracking the plan
+closely and ending almost exactly on the goal star is Phase 3 actually
+working; the red line visibly separating from it by the end is Lecture 18's
+drift finding, reproduced here under a real planned route instead of a
+straight calibration line.
+
 ## Walking through it
 
 **Three phases, two different eras of this course's own API usage, in

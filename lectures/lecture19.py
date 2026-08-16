@@ -22,9 +22,12 @@ skills on two different embodiments, not two stages of one pipeline.)
 import heapq
 import itertools
 import math
+import os
 
 import numpy as np
 from isaacsim import SimulationApp
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 kit = SimulationApp({"headless": True, "enable_motion_bvh": True, "multi_gpu": False, "active_gpu": 0})
 
@@ -330,6 +333,11 @@ WAYPOINT_TOL = 0.1
 MAX_STEPS_PER_WAYPOINT = 900
 total_steps = 0
 
+# Per-step trajectory, for tools/render_figures.py -- the actual driven
+# path, not just the start/end points already printed above.
+traj_gt = [(x0, y0)]
+traj_odo = [(x0, y0)]
+
 for wp in waypoints[1:]:
     reached = False
     for _ in range(MAX_STEPS_PER_WAYPOINT):
@@ -348,6 +356,8 @@ for wp in waypoints[1:]:
         total_steps += 1
         actual = jetbot.get_dof_velocities(dof_indices=wheel_dof_indices).numpy()[0]
         dead_reckon(odo, float(actual[0]), float(actual[1]))
+        traj_gt.append((x, y))
+        traj_odo.append((odo["x"], odo["y"]))
     if not reached:
         print(f"LECTURE: [drive] WARNING did not reach waypoint ({wp[0]:.2f}, {wp[1]:.2f}) "
               f"within {MAX_STEPS_PER_WAYPOINT} steps")
@@ -370,5 +380,14 @@ assert dist_to_goal < 0.25, (
 print("LECTURE: the plan built from one lidar scan, executed with only wheel velocity commands and no "
       "access to ground truth during the drive, actually got the robot to the goal -- verified from the "
       "simulated pose, not assumed from the planner's output")
+
+# Raw map/plan/drive data for tools/render_figures.py -- this run's actual
+# grid, A* path, waypoints, and per-step trajectory, not a redrawn mockup.
+np.savez(
+    os.path.join(HERE, "data_lecture19.npz"),
+    grid=grid, x_min=X_MIN, x_max=X_MAX, y_min=Y_MIN, y_max=Y_MAX, res=RES,
+    path=np.array(path), start=np.array(start), goal=np.array(goal),
+    waypoints=np.array(waypoints), traj_gt=np.array(traj_gt), traj_odo=np.array(traj_odo),
+)
 
 kit.close()

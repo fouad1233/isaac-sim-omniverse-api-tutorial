@@ -13,8 +13,12 @@ the beam passed through, at-range means the surface that stopped it,
 farther means unobserved, behind whatever was actually hit.
 """
 
+import os
+
 import numpy as np
 from isaacsim import SimulationApp
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 kit = SimulationApp({"headless": True, "enable_motion_bvh": True, "multi_gpu": False, "active_gpu": 0})
 
@@ -175,5 +179,12 @@ print(f"\nLECTURE: occupancy grid ('#'=occupied '.'=free ' '=unknown), "
       f"x:[{X_MIN},{X_MAX}] y:[{Y_MIN},{Y_MAX}] at {RES}m/cell:")
 for row in range(grid.shape[0] - 1, -1, -1):
     print("LECTURE: " + "".join(CHARS[v] for v in grid[row]))
+
+# Raw grid data for tools/render_figures.py -- the actual occupancy grid
+# this run computed, not a redrawn illustration of it.
+np.savez(
+    os.path.join(HERE, "data_lecture15.npz"),
+    grid=grid, x_min=X_MIN, x_max=X_MAX, y_min=Y_MIN, y_max=Y_MAX, res=RES,
+)
 
 kit.close()

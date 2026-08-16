@@ -17,8 +17,12 @@ real detour costs.
 import heapq
 import itertools
 
+import os
+
 import numpy as np
 from isaacsim import SimulationApp
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 kit = SimulationApp({"headless": True, "enable_motion_bvh": True, "multi_gpu": False, "active_gpu": 0})
 
@@ -285,5 +289,13 @@ for row in range(grid.shape[0] - 1, -1, -1):
         else:
             line.append(CHARS[grid[cell]])
     print("LECTURE: " + "".join(line))
+
+# Raw grid + path data for tools/render_figures.py -- the actual A* result
+# this run computed, not a redrawn illustration of it.
+np.savez(
+    os.path.join(HERE, "data_lecture16.npz"),
+    grid=grid, x_min=X_MIN, x_max=X_MAX, y_min=Y_MIN, y_max=Y_MAX, res=RES,
+    path=np.array(path), start=np.array(start), goal=np.array(goal),
+)
 
 kit.close()

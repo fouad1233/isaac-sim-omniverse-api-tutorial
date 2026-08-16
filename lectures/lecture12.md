@@ -48,6 +48,16 @@ LECTURE:   elevation   4.35deg -> median distance  3.08 m over 473454 returns
 LECTURE:   elevation   7.58deg -> median distance  3.09 m over 473410 returns
 ```
 
+![3D scatter plot of the lidar scan from the side: 32 visibly distinct elevation rings sweep out the same rectangular room as Lecture 11, curving up toward the ceiling and down toward the floor as elevation angle increases or decreases, colored by elevation.](figures/lecture12_scan_3d.png)
+
+Each ring in that plot is one elevation channel's full azimuth sweep,
+plotted from the real `(azimuth, elevation, distance)` triples converted to
+cartesian (`x=dist·cos(el)·cos(az)`, `y=dist·cos(el)·sin(az)`,
+`z=dist·sin(el)`). The 32 rings never actually reach the floor or ceiling —
+they curve *toward* them without touching, which is exactly the "every ray
+hits a wall, none the floor or ceiling" finding this lecture's vertical
+profile makes numerically below.
+
 ## Walking through it
 
 **`Example_Rotary`'s emitter layout genuinely spans elevation, unlike

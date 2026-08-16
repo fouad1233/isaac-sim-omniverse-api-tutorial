@@ -51,6 +51,16 @@ LECTURE:   azimuth   135deg -> 2.32 m
 LECTURE: compare against the room: East(az 0)=3m North(az 90)=3m West(az +-180)=2m South(az -90)=4m
 ```
 
+![Top-down scatter plot of the 2D lidar scan: a clean rectangular room outline traced by ~25,000 plotted beam returns (of 15.15M captured), with the sensor marked at the origin.](figures/lecture11_scan_topdown.png)
+
+Every point in that plot is a real decoded `(azimuth, distance)` pair
+converted to `(x, y) = (dist·cos(az), dist·sin(az))` — not a drawing of
+what the room "should" look like. The rectangle it traces is the same
+lopsided room the script builds (`x` in `[-2,3]`, `y` in `[-4,3]`), and the
+four straight edges are the four walls, each made of hundreds of thousands
+of individual beam returns from a rotating sensor, not four line segments
+someone typed in.
+
 Every number lines up: azimuth 0° (facing the room's East wall, 3m away at
 room-center) reads 2.89m; 90° (North, 3m) reads 2.89m; -90° (South, 4m)
 reads 3.89m; ±180° (West, 2m) reads 1.90m. The consistent ~0.1m gap is the

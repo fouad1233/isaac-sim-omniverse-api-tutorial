@@ -43,6 +43,13 @@ LECTURE:      #########################
 (Full grid: 35 printed rows, a clean rectangle of `#` with `.` filling the
 interior and blank margin around it — see the actual run for all of it.)
 
+![Rendered occupancy grid: a black rectangular wall outline enclosing white free space, with gray unknown space filling everything outside the walls the single scan never confirmed as clear.](figures/lecture15_occupancy_grid.png)
+
+That's the exact `grid` array the script computed, `imshow`'d instead of
+printed as ASCII — 759 white (free) cells inside the walls, 116 black
+(occupied) cells forming the wall outline itself, and 700 gray (unknown)
+cells outside it, everywhere the one scan never had a reason to look.
+
 ## Walking through it
 
 **The compass numbers are identical to Lecture 11's, on purpose.** Same

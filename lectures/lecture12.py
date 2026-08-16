@@ -14,8 +14,12 @@ lecture exists to show it was never a general truth about the API, only a
 fact about that one config.
 """
 
+import os
+
 import numpy as np
 from isaacsim import SimulationApp
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 kit = SimulationApp({"headless": True, "enable_motion_bvh": True, "multi_gpu": False, "active_gpu": 0})
 
@@ -209,5 +213,12 @@ for e in uniq_el[::4]:
     if in_ring.any():
         d = np.median(dist_m[in_ring])
         print(f"LECTURE:   elevation {e:6.2f}deg -> median distance {d:5.2f} m over {int(in_ring.sum())} returns")
+
+# Raw scan data for tools/render_figures.py -- a real decoded 3D point
+# cloud (az/el/dist, spherical per elementsCoordsType), not a mockup.
+np.savez(
+    os.path.join(HERE, "data_lecture12.npz"),
+    az_deg=az_deg, el_deg=el_deg, dist_m=dist_m, channel_id=scan1["channel_id"],
+)
 
 kit.close()

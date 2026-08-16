@@ -18,8 +18,12 @@ active_gpu=0` below pins everything to one GPU and fixes it. If you're on a
 single-GPU machine you likely don't need this, but it's harmless either way.
 """
 
+import os
+
 import numpy as np
 from isaacsim import SimulationApp
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 kit = SimulationApp({"headless": True, "enable_motion_bvh": True, "multi_gpu": False, "active_gpu": 0})
 
@@ -235,5 +239,10 @@ for target_az in range(-180, 180, 45):
     else:
         print(f"LECTURE:   azimuth {target_az:5d}deg -> no return nearby")
 print("LECTURE: compare against the room: East(az 0)=3m North(az 90)=3m West(az +-180)=2m South(az -90)=4m")
+
+# Raw scan data for tools/render_figures.py -- a top-down scatter of the
+# real decoded returns, not a redrawn illustration of what the room
+# "should" look like.
+np.savez(os.path.join(HERE, "data_lecture11.npz"), az_deg=az_deg, dist_m=dist_m)
 
 kit.close()

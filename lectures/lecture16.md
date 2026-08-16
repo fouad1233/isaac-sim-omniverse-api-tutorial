@@ -40,6 +40,14 @@ LECTURE:      #.......................#
               ...
 ```
 
+![Rendered occupancy grid with the A* route drawn over it: a red line runs from the start marker, dips below the black pillar blocking the direct line, and continues to the goal marker.](figures/lecture16_astar_path.png)
+
+The red line is the actual 19-cell path the script found, converted from
+grid cells back to world coordinates — not a hand-drawn detour. It visibly
+does what the printed numbers claim: leaves the straight line between `S`
+and `G` (which the pillar blocks) and comes back to it once past the
+obstacle.
+
 ## Walking through it
 
 **The pillar's first placement failed silently, and the fix is itself

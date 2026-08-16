@@ -8,6 +8,9 @@ output/
 # already shows the expected output inline, so these aren't checked in
 lectures/output_*.usda
 lectures/output_*.png
+# raw numeric dumps a lecture writes for tools/render_figures.py to consume;
+# the rendered PNGs under lectures/figures/ are the committed artifact
+lectures/data_*.npz
 
 # Isaac Sim / Kit scratch state some environments generate in-place
 kit_cache/
