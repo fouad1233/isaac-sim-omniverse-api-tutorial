@@ -13,6 +13,13 @@ import os
 
 from isaacsim import SimulationApp
 
+# Headless by design, unlike lectures 2 and 3: this lecture's content is
+# file/composition mechanics (reference resolution, flattened file size, a
+# subprocess re-check), verified entirely through printed text, not a scene
+# meant to be watched. Flipping this to False would hit the exact same
+# stage/viewport disconnect lectures 2-3 had -- asset_stage and
+# referenced_stage below are raw Usd.Stage objects, never handed to
+# omni.usd.get_context(), so nothing would appear in a window either way.
 kit = SimulationApp({"headless": True})
 
 from pxr import Usd, UsdGeom  # noqa: E402
