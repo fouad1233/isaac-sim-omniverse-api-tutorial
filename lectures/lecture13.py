@@ -22,6 +22,7 @@ import numpy as np  # noqa: E402
 import omni.timeline  # noqa: E402
 import omni.usd  # noqa: E402
 from isaacsim.sensors.camera import Camera  # noqa: E402
+from PIL import Image  # noqa: E402
 from pxr import UsdGeom, UsdLux  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -101,6 +102,7 @@ def red_pixel_count_and_centroid(rgba):
 rgba = warm_up()
 n_red, centroid = red_pixel_count_and_centroid(rgba)
 print(f"LECTURE: baseline render -- {n_red} red pixels, centroid={centroid}")
+Image.fromarray(rgba, mode="RGBA").save(os.path.join(HERE, "output_lecture13_baseline.png"))
 
 # =============================================================================
 # Part 1: the intrinsics matrix -- built from four numbers you already have
@@ -173,6 +175,7 @@ rgba = render_after_change()
 n_red, _ = red_pixel_count_and_centroid(rgba)
 print(f"LECTURE: clippingRange=(0.1, 4.0)   -- {n_red} red pixels "
       f"(far plane now in front of the cube -- should be 0)")
+Image.fromarray(rgba, mode="RGBA").save(os.path.join(HERE, "output_lecture13_far_clip.png"))
 
 camera.set_clipping_range(near_distance=0.1, far_distance=20.0)
 camera.set_clipping_range(near_distance=6.0)
@@ -180,11 +183,13 @@ rgba = render_after_change()
 n_red, _ = red_pixel_count_and_centroid(rgba)
 print(f"LECTURE: clippingRange=(6.0, 20.0)  -- {n_red} red pixels "
       f"(near plane now behind the cube from the camera's side -- should be 0)")
+Image.fromarray(rgba, mode="RGBA").save(os.path.join(HERE, "output_lecture13_near_clip.png"))
 
 camera.set_clipping_range(near_distance=0.1, far_distance=20.0)
 rgba = render_after_change()
 n_red, _ = red_pixel_count_and_centroid(rgba)
 print(f"LECTURE: clippingRange=(0.1, 20.0)  -- {n_red} red pixels "
       f"(restored -- confirms the cube itself was never the problem)")
+Image.fromarray(rgba, mode="RGBA").save(os.path.join(HERE, "output_lecture13_restored.png"))
 
 kit.close()

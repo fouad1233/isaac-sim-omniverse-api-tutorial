@@ -41,6 +41,19 @@ LECTURE: clippingRange=(6.0, 20.0)  -- 0 red pixels (near plane now behind the c
 LECTURE: clippingRange=(0.1, 20.0)  -- 28898 red pixels (restored -- confirms the cube itself was never the problem)
 ```
 
+Four real captured frames from the same camera, one per `clippingRange`
+tested above:
+
+| baseline (near=1, far=1e6) | far=4.0 (cube beyond far plane) | near=6.0 (cube nearer than near plane) | restored (near=0.1, far=20) |
+| --- | --- | --- | --- |
+| ![Baseline render: a red cube filling most of the frame, centered.](figures/lecture13_baseline.png) | ![Far-clipped render: solid black, the cube has vanished.](figures/lecture13_far_clip.png) | ![Near-clipped render: solid black, the cube has vanished the other way.](figures/lecture13_near_clip.png) | ![Restored render: the same red cube as the baseline.](figures/lecture13_restored.png) |
+
+The two black frames look identical, and that's worth noticing: "the far
+plane cut it off" and "the near plane cut it off" produce the exact same
+visible symptom (nothing) despite being opposite causes. Only the printed
+red-pixel count and the code that set each `clippingRange` tell them
+apart from a screenshot alone.
+
 ## Walking through it
 
 **The intrinsics matrix is four numbers you already had, not a mystery
