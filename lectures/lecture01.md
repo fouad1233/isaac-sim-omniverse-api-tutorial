@@ -9,6 +9,68 @@ application — Omniverse **Kit** — that your Python script *is running inside
 of*, and that application has to boot before almost anything else works.
 `SimulationApp` is the object that boots it.
 
+## Before you run anything: fix your editor
+
+If you're using VS Code, do this now — before lecture 1, not after you've
+already hit it on lecture 6 and gone looking for a bug that isn't there.
+
+**Symptom:** you Ctrl-click (or F12 / "Go to Definition") on `SimulationApp`,
+`Camera`, `Lidar`, anything from `isaacsim.*` or `omni.*` — and nothing
+happens. No error, no red squiggle telling you the import is unresolved,
+just silence. Pylance genuinely cannot find these libraries, and it will not
+tell you that's what's wrong.
+
+**Why:** Isaac Sim doesn't `pip install` `isaacsim`/`omni`. Each of Kit's
+~600 extensions ships its own fragment of these two packages under
+`exts/<dotted.ext.name>/isaacsim/...` (or `.../omni/...`), and the extension
+manager stitches the fragments together *at runtime*, based on which
+extensions happen to be enabled for the app you launched. That stitching
+happens through Kit's own loader, not a static `PYTHONPATH` — so there is no
+list of "here's where everything is" for a static analyzer like Pylance to
+read. It isn't a settings bug you're missing a checkbox for; the information
+literally doesn't exist anywhere until the app is running.
+
+There's a second trap hiding under the first one. Isaac Sim's own
+`python_packages/isaacsim/__init__.py` is a real bootstrap module (it's what
+decides which extensions to enable and wires up their paths when you use
+`python.sh`) — and a real `__init__.py` file, by Python's own import rules,
+**blocks** namespace-package merging for every other `isaacsim` fragment on
+the path. Point Pylance at that directory thinking it'll help, and you get
+the opposite: it commits to that one bootstrap file as the *entire*
+`isaacsim` package and `isaacsim.sensors`, `isaacsim.core`, all of it,
+silently stop resolving. (Found by bisection: adding that one directory to
+an otherwise-working config was enough to break every `isaacsim.*` submodule
+import, verified with `pyright` directly.)
+
+**Fix:** this repo ships a generator that scans your actual install and
+writes the exact, verified path list Pylance needs — run it once, from the
+repo root, pointing at your own Isaac Sim install:
+
+```bash
+python3 tools/setup_vscode.py /path/to/your/isaacsim-install
+```
+
+Then reload the window (`Ctrl+Shift+P` → `Developer: Reload Window`). It
+writes `.vscode/settings.json` with `python.defaultInterpreterPath` (Kit's
+own Python, so hover/autocomplete match what actually runs) and
+`python.analysis.extraPaths` (every `isaacsim`/`omni` fragment, minus the
+bootstrap directory that breaks the merge). That file isn't checked into
+this repo — the paths are absolute and specific to *your* machine, so it's
+gitignored; you're expected to generate your own.
+
+This was verified the same way every claim in this course is verified: not
+by reasoning about how namespace packages are supposed to work, but by
+running `pyright` (the engine Pylance is built on) against every lecture
+script with the generated config and confirming zero unresolved imports —
+then deliberately re-adding the bootstrap directory and watching the same
+imports break, to isolate the actual cause rather than guess at it.
+
+If you're not on VS Code, the underlying fact still matters: any tool that
+does static import resolution (pyright standalone, mypy, an IDE's "jump to
+source") needs this same fragment list, built the same way. Read
+`tools/setup_vscode.py` — the scanning logic has nothing VS-Code-specific in
+it.
+
 ## Run it
 
 ```bash
