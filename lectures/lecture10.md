@@ -102,3 +102,9 @@ docs and hoping. The official Isaac Sim tutorials, the ROS2 bridge, Isaac
 Lab's RL environments, and real robot-import workflows all build on
 exactly this layer — `Stage`, `Prim`, `UsdPhysics`, the timeline, cameras,
 lights, articulations. None of that should feel like magic anymore.
+
+## Next
+
+[Lecture 11 — 2D LiDAR](lecture11.md): Module 2 starts here, turning the
+cameras from Lectures 7-8 into range sensors and building toward a mobile
+robot that can sense, map, plan, and drive.

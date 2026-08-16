@@ -30,9 +30,13 @@ your camera returns nothing until you wait 30 frames. This fills that gap.
   enough that most lectures will run unmodified — see the version note at the
   bottom of each lecture's `.md` for the handful of spots where the API moved
   between major versions.
-- No GPU-heavy assets required. Every lecture builds its scene from primitive
-  shapes authored directly in the script — nothing streams from a content CDN,
-  so nothing here needs a fast connection to run.
+- No GPU-heavy assets required for Lectures 1-16. Every one of those builds
+  its scene from primitive shapes authored directly in the script — nothing
+  streams from a content CDN, so nothing there needs a fast connection to run.
+  Lectures 17-19 are the exception: a humanoid robot + trained locomotion
+  policy and a Jetbot mesh can't be authored from primitives, so those three
+  pull assets from Isaac Sim's Nucleus/CDN the first time they run. That
+  dependency is flagged in each of those lectures' own `.md` files.
 - Comfortable reading Python. No prior Omniverse/USD knowledge assumed — that's
   the whole point of lecture 2.
 
@@ -59,6 +63,8 @@ normal and every lecture's `.md` tells you what output to expect after that.
 
 ## Curriculum
 
+### Module 1 — Fundamentals (Lectures 1-10)
+
 | # | Lecture | What it teaches |
 |---|---------|------------------|
 | 1 | [Hello Simulation](lectures/lecture01.md) | `SimulationApp`, the headless app lifecycle, why import order matters |
@@ -72,12 +78,37 @@ normal and every lecture's `.md` tells you what output to expect after that.
 | 9 | [Articulations & Joint Drives](lectures/lecture09.md) | `ArticulationRootAPI`, `RevoluteJoint`, `DriveAPI` stiffness/damping, steady-state error under load, and a real `FixedJoint` anchor bug caught by checking rather than assuming |
 | 10 | [Capstone](lectures/lecture10.md) | One script: physics + a driven articulated joint + placed lighting + a camera, wired together end to end — and the scene that caught Lecture 09's bug |
 
-## Why these specific ten
+### Module 2 — Sensing, Mapping, and Mobile Robots (Lectures 11-19)
 
-Fundamentals only — no ROS2 bridge, no RL training loop, no specific robot
-import. Those are all built *on top of* what's here, and every tutorial for
-them assumes you already have this. If lectures 1-10 make sense, the official
-robot-import and Isaac Lab tutorials will stop feeling like magic.
+| # | Lecture | What it teaches |
+|---|---------|------------------|
+| 11 | [2D LiDAR](lectures/lecture11.md) | `GenericModelOutput`'s `(x, y, z)` fields are really `(azimuth, elevation, distance)` by default — decoding a real RTX Lidar scan instead of assuming cartesian points |
+| 12 | [3D LiDAR](lectures/lecture12.md) | Swapping in a full 3D rotary config and re-verifying Lecture 11's decoding still holds once elevation is no longer always zero |
+| 13 | [Camera Parameters Deep Dive](lectures/lecture13.md) | Building the intrinsics matrix from focal length/aperture/resolution and checking it against where a real 3D point actually lands on a rendered image |
+| 14 | [Depth Cameras and RGB-D](lectures/lecture14.md) | `distance_to_image_plane` vs `distance_to_camera` — two different depth conventions that only agree at the image center, and which one backprojection needs |
+| 15 | [Mapping](lectures/lecture15.md) | Turning one lidar scan into a full occupancy grid — bin every azimuth, keep the nearest return, mark FREE/OCCUPIED/UNKNOWN per cell |
+| 16 | [Path Planning](lectures/lecture16.md) | A* over the occupancy grid, with an added obstacle whose blocking effect and detour are both verified in code, not assumed |
+| 17 | [Humanoid with a Ready-to-Use Policy (H1)](lectures/lecture17.md) | Driving a trained locomotion policy through Lecture 09's PD-drive machinery, and a real render/physics-decoupling bug that collapses the robot while the script still exits 0 |
+| 18 | [Differential-Drive Controller (Jetbot)](lectures/lecture18.md) | `DifferentialController` + wheel odometry — and why calibrating one kinematic constant against straight-line motion alone made turning odometry 6.4x worse |
+| 19 | [Module 2 Capstone](lectures/lecture19.md) | Scan → map → plan → drive in one script, verifying the plan against real physics — plus a bug from combining two of this course's own API eras in one file |
+
+## Why this order
+
+Module 1 is fundamentals only — no ROS2 bridge, no RL training loop, no
+specific robot import. Those are all built *on top of* what's here, and every
+tutorial for them assumes you already have this. If Lectures 1-10 make sense,
+the official robot-import and Isaac Lab tutorials will stop feeling like
+magic.
+
+Module 2 builds one mobile-robot pipeline end to end: sense the environment
+(11-14), turn a scan into a map and a map into a plan (15-16), then actually
+drive — first a humanoid on a pretrained policy (17), then a wheeled robot
+under direct kinematic control with its own odometry (18), then all four
+pieces chained together and checked against real physics rather than trusted
+individually (19). Several of these lectures exist specifically because
+chaining verified pieces together surfaced a bug none of them showed alone —
+that's the point of ending on a capstone instead of stopping once each piece
+works in isolation.
 
 ## Contributing
 
