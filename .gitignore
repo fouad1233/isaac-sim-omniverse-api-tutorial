@@ -11,6 +11,10 @@ lectures/output_*.png
 # raw numeric dumps a lecture writes for tools/render_figures.py to consume;
 # the rendered PNGs under lectures/figures/ are the committed artifact
 lectures/data_*.npz
+# Module 3 (Isaac Lab) lectures write their findings to a file instead of
+# relying on captured stdout -- see lecture20.md/lecture21.md for why. Each
+# lecture's .md already shows the expected content inline.
+lectures/*_results.txt
 
 # Isaac Sim / Kit scratch state some environments generate in-place
 kit_cache/

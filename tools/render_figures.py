@@ -383,6 +383,36 @@ def render_lecture19(data_path: Path) -> Path | None:
     return out
 
 
+def render_lecture21(data_path: Path) -> Path | None:
+    if not data_path.exists():
+        return None
+    d = np.load(data_path)
+    its, rewards, base_contact, ep_len = d["iterations"], d["rewards"], d["base_contact"], d["ep_len"]
+
+    fig, axes = plt.subplots(2, 1, figsize=(8, 7), sharex=True)
+
+    ax = axes[0]
+    ax.plot(its, rewards, color="#1f77b4", linewidth=1.2)
+    ax.set_ylabel("Mean reward")
+    ax.set_title("Isaac-Velocity-Flat-G1-v0 -- PPO training (500 iterations, num_envs=2048)")
+    ax.grid(alpha=0.3)
+
+    ax = axes[1]
+    ax.plot(its, base_contact, color="#d62728", linewidth=1.2, label="base_contact termination rate")
+    ax.plot(its, ep_len / ep_len.max(), color="#2ca02c", linewidth=1.0, alpha=0.7,
+            label="episode length (normalized to max)")
+    ax.set_xlabel("PPO iteration")
+    ax.set_ylabel("fraction")
+    ax.legend(loc="center right", fontsize=8)
+    ax.grid(alpha=0.3)
+
+    fig.tight_layout()
+    out = FIGURES_DIR / "lecture21_reward_curve.png"
+    fig.savefig(out, dpi=150)
+    plt.close(fig)
+    return out
+
+
 RENDERERS = {
     4: render_lecture04,
     5: render_lecture05,
@@ -396,6 +426,7 @@ RENDERERS = {
     16: render_lecture16,
     19: render_lecture19,
     18: render_lecture18,
+    21: render_lecture21,
 }
 
 

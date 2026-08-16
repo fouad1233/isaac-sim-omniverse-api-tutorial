@@ -140,8 +140,16 @@ from the planner's intent.
 
 ## Next
 
-That's Module 2. From here: extending this stack to a dynamic obstacle,
-swapping the hand-rolled A* for a library planner, or replacing wheel
-odometry with something that doesn't drift (visual or lidar-based
-localization) are the natural next steps this capstone sets up but
+That's Module 2 — hand-built scenes, hand-rolled control loops, and
+sensors read and interpreted one field at a time. Extending this stack to a
+dynamic obstacle, swapping the hand-rolled A* for a library planner, or
+replacing wheel odometry with something that doesn't drift (visual or
+lidar-based localization) are natural next steps this capstone sets up but
 doesn't take.
+
+[Module 3](../README.md#module-3--reinforcement-learning-with-isaac-lab)
+takes a different one: instead of hand-authoring a robot's control loop,
+[Lecture 20](lecture20.md) inspects what Isaac Lab's `ManagerBasedRLEnv`
+assembles from a declarative config, and [Lecture 21](lecture21.md) trains
+a real PPO policy on top of it — a different toolchain (Isaac Lab, not
+plain Isaac Sim) from everything through Lecture 19.

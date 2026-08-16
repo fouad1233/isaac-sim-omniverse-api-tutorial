@@ -89,8 +89,22 @@ normal and every lecture's `.md` tells you what output to expect after that.
 | 15 | [Mapping](lectures/lecture15.md) | Turning one lidar scan into a full occupancy grid — bin every azimuth, keep the nearest return, mark FREE/OCCUPIED/UNKNOWN per cell |
 | 16 | [Path Planning](lectures/lecture16.md) | A* over the occupancy grid, with an added obstacle whose blocking effect and detour are both verified in code, not assumed |
 | 17 | [Humanoid with a Ready-to-Use Policy (H1)](lectures/lecture17.md) | Driving a trained locomotion policy through Lecture 09's PD-drive machinery, and a real render/physics-decoupling bug that collapses the robot while the script still exits 0 |
-| 18 | [Differential-Drive Controller (Jetbot)](lectures/lecture18.md) | `DifferentialController` + wheel odometry — and why calibrating one kinematic constant against straight-line motion alone made turning odometry 6.4x worse |
+| 18 | [Differential-Drive Controller (Jetbot)](lectures/lecture18.md) | `DifferentialController` + wheel odometry — and why calibrating one kinematic constant against straight-line motion alone made turning odometry 1.6x worse |
 | 19 | [Module 2 Capstone](lectures/lecture19.md) | Scan → map → plan → drive in one script, verifying the plan against real physics — plus a bug from combining two of this course's own API eras in one file |
+
+### Module 3 — Reinforcement Learning with Isaac Lab (Lectures 20-21)
+
+> **Different toolchain.** Lectures 1-19 run directly against an Isaac Sim
+> install's `python.sh`. Module 3 needs a separate **Isaac Lab** install
+> (this course used **Isaac Lab 2.2.1**, which pins **Isaac Sim 5.0.0** /
+> Python 3.11 — not the 6.0.1 / Python 3.12 pairing every earlier lecture
+> used) and runs through `isaaclab.sh -p`, not `python.sh`. See
+> [Lecture 20](lectures/lecture20.md) for the exact install/run details.
+
+| # | Lecture | What it teaches |
+|---|---------|------------------|
+| 20 | [Isaac Lab Environments 101](lectures/lecture20.md) | What `gym.make()` on a registered Isaac Lab task actually hands back — observation/action space shapes, why the action space is unbounded rather than normalized, and a Kit-specific gotcha where stdout silently stops reaching a redirected log file mid-run |
+| 21 | [Training G1 to Walk with PPO](lectures/lecture21.md) | A real 500-iteration PPO training run against `Isaac-Velocity-Flat-G1-v0` using Isaac Lab's own `rsl_rl` scripts, a reward curve with a real early plateau before it breaks through, and the trained checkpoint's measured before/after against Lecture 20's untrained baseline (8/8 falls → 0/8) |
 
 ## Why this order
 
@@ -109,6 +123,17 @@ individually (19). Several of these lectures exist specifically because
 chaining verified pieces together surfaced a bug none of them showed alone —
 that's the point of ending on a capstone instead of stopping once each piece
 works in isolation.
+
+Module 3 changes the question. Modules 1-2 hand-author a control loop and
+trust it because you wrote every line of it. Isaac Lab's
+`ManagerBasedRLEnv` is the same physics/articulation machinery underneath,
+now assembled from a declarative config and driven by a policy *learned*
+instead of written — so the two lectures here inspect the environment
+before trusting it (20), then train a real policy on it and measure the
+actual before/after rather than assuming training worked (21). It's short
+by design: the point isn't to re-derive PPO, it's to show what changes
+(and what doesn't) once the control loop is trained rather than hand-tuned,
+using the same "check, don't assume" habit as every earlier module.
 
 ## Contributing
 
