@@ -53,6 +53,10 @@ and the `match=True` lines above are the real proof; this image is here
 only to confirm the box exists where the math says it does, the same way
 [lecture 2](lecture02.md)'s preview did.
 
+A real windowed run of `lecture03.py`, the `Thing` cube visible in the viewport while the script drives it through the rotation-order examples.
+
+![Screen recording of a real, non-headless run of lecture03.py showing Kit's own window and viewport live.](figures/lecture03_sim.gif)
+
 ## Walking through it
 
 **This lecture uses `ctx.new_stage()`, not the raw `Usd.Stage` API Lecture 2

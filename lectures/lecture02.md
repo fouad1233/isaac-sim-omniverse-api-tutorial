@@ -60,6 +60,10 @@ there's something real to look at instead of an attribute list. Camera
 mechanics are Lecture 07's actual subject; this is only proof the box
 described above is really there.
 
+A real windowed run of `lecture02.py`. Watch the stage tree fill in (`Box`, `Sun`, `PreviewCam`) and Kit's own toast notification fire -- "No lights found in stage, applying lighting: 'Default'" -- the moment the script hands this raw-`Usd.Stage` content to the open viewport.
+
+![Screen recording of a real, non-headless run of lecture02.py showing Kit's own window and viewport live.](figures/lecture02_sim.gif)
+
 ## Walking through it
 
 **Stage vs. Layer.** A `Stage` is the object you actually call methods on —

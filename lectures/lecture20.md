@@ -58,6 +58,10 @@ LECTURE: per-env total reward over 100 steps: [-3.87, -3.82, -2.74, -3.37, -3.81
 LECTURE: envs that terminated at least once (base contact / fall) = 8/8
 ```
 
+A real windowed run of `lecture20.py`, all 8 vectorized `Isaac-Velocity-Flat-G1-v0` environments visible together in Isaac Lab's own default viewport -- this is what `gym.make()` actually built, holding the default pose (zero action) for the 100 steps this lecture measures.
+
+![Screen recording of a real, non-headless run of lecture20.py, showing 8 vectorized G1 humanoid environments in Isaac Lab's viewport.](figures/lecture20_sim.gif)
+
 ## Walking through it
 
 **123 observations, 37 actions, for a robot Lecture 17 never even needed a

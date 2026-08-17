@@ -44,6 +44,10 @@ Same numbers as the table above, but the shape is the actual point: both
 curves head toward the dotted target line and both stop just short of it,
 one fast, one gradual.
 
+A real windowed run of `lecture09.py`, the driven articulated arm visible in the viewport as the joint drive settles under load.
+
+![Screen recording of a real, non-headless run of lecture09.py showing Kit's own window and viewport live.](figures/lecture09_sim.gif)
+
 ## Walking through it
 
 **Four pieces build one articulation, and each does a distinct job.** The

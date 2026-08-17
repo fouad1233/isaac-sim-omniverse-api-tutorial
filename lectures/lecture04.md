@@ -78,6 +78,10 @@ few hundred thousand mesh vertices produces the same few-kilobyte
 referencing file and a flattened one hundreds of megabytes larger, for
 exactly the reason this chart already shows in miniature.
 
+A real windowed run of `lecture04.py`. This lecture works entirely with raw `Usd.Stage` objects written straight to `.usda` files on disk -- it never hands that content to Kit's own viewport -- so the window genuinely stays empty for the whole run even though the reference/flatten logic underneath is executing for real. That's the honest result of running it windowed, not a capture bug.
+
+![Screen recording of a real, non-headless run of lecture04.py showing Kit's own window and viewport live.](figures/lecture04_sim.gif)
+
 ## Walking through it
 
 **A reference is a pointer, not a copy.** `prop.GetReferences().AddReference("output_lecture04_asset.usda")`

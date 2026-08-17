@@ -44,6 +44,10 @@ a 50x intensity difference between them and no visible difference at all.
 C shows the interior light itself as a glowing spot and the room's near
 wall dimly visible next to it — the *only* case with anything to see.
 
+A real windowed run of `lecture08.py`, the camera positioned inside the enclosed room for the dome-light-vs-interior-light comparison.
+
+![Screen recording of a real, non-headless run of lecture08.py showing Kit's own window and viewport live.](figures/lecture08_sim.gif)
+
 ## Walking through it
 
 **The room is sealed on purpose — six walls, no gaps.** `build_room()`

@@ -36,6 +36,10 @@ Every dot is one real `kit.update()` call, not an interpolation — the flat
 red segment and the vertical jump at the stop boundary are exactly what
 the numbers above describe, just harder to miss at a glance.
 
+A real windowed run of `lecture06.py`, the same falling-box scene visible in the viewport while `timeline.play()/pause()/stop()` drive it through each phase.
+
+![Screen recording of a real, non-headless run of lecture06.py showing Kit's own window and viewport live.](figures/lecture06_sim.gif)
+
 ## Walking through it
 
 **`pause()` freezes the simulation in place and leaves it there.** After 30

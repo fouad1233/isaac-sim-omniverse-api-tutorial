@@ -42,6 +42,10 @@ above — the shape is what matters: a visible ramp-up before the walking
 policy reaches its commanded speed, exactly the "ramp-up + real tracking
 error" the printed comparison to the naive line already named.
 
+A real windowed run of `lecture17.py`, both `H1_standing` and `H1_walking` humanoids visible mid-stride in the viewport as the pretrained policy drives the walking one.
+
+![Screen recording of a real, non-headless run of lecture17.py showing Kit's own window and viewport live.](figures/lecture17_sim.gif)
+
 ## Walking through it
 
 **The collapse this script produced first, and why it looked plausible.**

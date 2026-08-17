@@ -58,6 +58,10 @@ they curve *toward* them without touching, which is exactly the "every ray
 hits a wall, none the floor or ceiling" finding this lecture's vertical
 profile makes numerically below.
 
+A real windowed run of `lecture12.py`, the same walled room and `OmniLidar` prim visible in the viewport as the 3D scan sweeps out the elevation rings plotted above.
+
+![Screen recording of a real, non-headless run of lecture12.py showing Kit's own window and viewport live.](figures/lecture12_sim.gif)
+
 ## Walking through it
 
 **`Example_Rotary`'s emitter layout genuinely spans elevation, unlike

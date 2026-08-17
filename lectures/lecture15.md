@@ -50,6 +50,10 @@ printed as ASCII — 759 white (free) cells inside the walls, 116 black
 (occupied) cells forming the wall outline itself, and 700 gray (unknown)
 cells outside it, everywhere the one scan never had a reason to look.
 
+A real windowed run of `lecture15.py`, the same walled room and `Lidar` prim visible in the viewport as the single scan this lecture turns into the occupancy grid above gets captured.
+
+![Screen recording of a real, non-headless run of lecture15.py showing Kit's own window and viewport live.](figures/lecture15_sim.gif)
+
 ## Walking through it
 
 **The compass numbers are identical to Lecture 11's, on purpose.** Same

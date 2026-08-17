@@ -48,6 +48,10 @@ does what the printed numbers claim: leaves the straight line between `S`
 and `G` (which the pillar blocks) and comes back to it once past the
 obstacle.
 
+A real windowed run of `lecture16.py`, the walled room -- now with `WallPillar` blocking the direct line -- and `Lidar` prim visible in the viewport as the scan behind the A* plan above gets captured.
+
+![Screen recording of a real, non-headless run of lecture16.py showing Kit's own window and viewport live.](figures/lecture16_sim.gif)
+
 ## Walking through it
 
 **The pillar's first placement failed silently, and the fix is itself

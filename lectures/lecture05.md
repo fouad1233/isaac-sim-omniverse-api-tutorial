@@ -42,6 +42,10 @@ The black and blue lines above aren't just close, they're the same
 line — that's the implicit-fallback-scene finding made visible instead of
 argued from a table of four-decimal numbers.
 
+A real windowed run of `lecture05.py`, the falling box and ground plane visible in the viewport as the three gravity scenarios run back to back.
+
+![Screen recording of a real, non-headless run of lecture05.py showing Kit's own window and viewport live.](figures/lecture05_sim.gif)
+
 ## Walking through it
 
 **Three separate opt-ins, and it's worth knowing which is which.**

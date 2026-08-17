@@ -124,6 +124,10 @@ LECTURE: closing
 Notice what's *missing*: the script's very last `print` never appears. That's
 not a bug — keep reading.
 
+A real windowed (non-headless) run of `lecture01.py`. This lecture only exercises the `SimulationApp` lifecycle -- it never authors any stage content -- so the GIF shows exactly what that looks like: Kit's own window opening, sitting idle through 5 `update()` calls, and closing. No scene to render is itself the point of this lecture.
+
+![Screen recording of a real, non-headless run of lecture01.py showing Kit's own window and viewport live.](figures/lecture01_sim.gif)
+
 ## Walking through it
 
 **Import order is not a style preference.** `from isaacsim import

@@ -47,6 +47,10 @@ coincidence: `distance_to_image_plane` genuinely has nowhere to go, while
 center pixel — the exact `sqrt(x²+y²+1)` ray-length effect the numbers
 above quantify.
 
+A real windowed run of `lecture14.py`, the floor, `Sun`, and `Cam` visible in the viewport as the script captures depth and RGB frames from the same camera.
+
+![Screen recording of a real, non-headless run of lecture14.py showing Kit's own window and viewport live.](figures/lecture14_sim.gif)
+
 ## Walking through it
 
 **A flat, perpendicular floor makes the two depth conventions cleanly

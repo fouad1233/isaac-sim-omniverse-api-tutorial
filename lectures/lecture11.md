@@ -67,6 +67,10 @@ reads 3.89m; ±180° (West, 2m) reads 1.90m. The consistent ~0.1m gap is the
 sensor sitting slightly off the room's geometric center — real geometry,
 not error.
 
+A real windowed run of `lecture11.py`, the walled room and the `Lidar` prim's ray lines visible in the viewport as the 2D scan is captured (the flat top-down scatter plot above is built from this same scan's return data).
+
+![Screen recording of a real, non-headless run of lecture11.py showing Kit's own window and viewport live.](figures/lecture11_sim.gif)
+
 ## Walking through it
 
 **Read `elementsCoordsType`, don't assume it.** `GenericModelOutput` has no

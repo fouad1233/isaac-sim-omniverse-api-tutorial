@@ -38,6 +38,10 @@ at it.
 
 ![The saved camera frame: a red square centered on a black background, the top-down view of a red cube captured by the script's camera.](figures/lecture07_top_down.png)
 
+A real windowed run of `lecture07.py`, the cube and camera visible in the viewport as the script captures RGBA frames from it.
+
+![Screen recording of a real, non-headless run of lecture07.py showing Kit's own window and viewport live.](figures/lecture07_sim.gif)
+
 ## Walking through it
 
 **Two things had to exist before any pixel could exist.** The

@@ -33,6 +33,10 @@ the only light was a dome outside a sealed room.
 
 ![The saved capstone frame: a blue base on a gray pedestal with an orange arm swung up to about 60 degrees, lit clearly against a visible floor and background.](figures/lecture10_capstone.png)
 
+A real windowed run of `lecture10.py`, the full capstone scene -- lit arm, pedestal, floor, and camera -- visible together in the viewport.
+
+![Screen recording of a real, non-headless run of lecture10.py showing Kit's own window and viewport live.](figures/lecture10_sim.gif)
+
 ## Walking through it
 
 **One line per earlier lecture, present in this scene:** `UsdPhysics.Scene`

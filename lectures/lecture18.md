@@ -43,6 +43,10 @@ calibrated radius was never tested against, and the calibrated line (red)
 visibly overshoots past the ground-truth end point while the nominal line
 (green) stays close to it.
 
+A real windowed run of `lecture18.py`. The Jetbot is a small robot on a large 20x20 m ground plane, so it reads as a tiny shape near the center of the frame -- watch it drift as the calibration and S-curve segments drive it.
+
+![Screen recording of a real, non-headless run of lecture18.py showing Kit's own window and viewport live.](figures/lecture18_sim.gif)
+
 ## Walking through it
 
 **The setup: calibrate a documented constant against the real robot,

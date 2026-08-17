@@ -54,6 +54,10 @@ visible symptom (nothing) despite being opposite causes. Only the printed
 red-pixel count and the code that set each `clippingRange` tell them
 apart from a screenshot alone.
 
+A real windowed run of `lecture13.py`, the cube, `Sun`, and `Cam` visible in the viewport as the script walks through focal length, aperture, and clipping-range changes.
+
+![Screen recording of a real, non-headless run of lecture13.py showing Kit's own window and viewport live.](figures/lecture13_sim.gif)
+
 ## Walking through it
 
 **The intrinsics matrix is four numbers you already had, not a mystery

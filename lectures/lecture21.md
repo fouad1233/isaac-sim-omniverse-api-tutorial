@@ -65,6 +65,10 @@ base velocity:
 
 ![Two Unitree G1 humanoids walking forward on a flat grid floor in Isaac Lab's play viewer, each with small colored velocity-command arrows rendered above the torso.](figures/lecture21_g1_pretrained_walk.gif)
 
+A real windowed run of `lecture21.py` itself (as opposed to the NVIDIA pretrained-checkpoint GIF above) -- all 8 vectorized environments driven by this course's own trained checkpoint, staying upright instead of collapsing the way Lecture 20's zero-action pass did.
+
+![Screen recording of a real, non-headless run of lecture21.py, showing 8 vectorized G1 humanoid environments walking under this course's own trained PPO checkpoint.](figures/lecture21_sim.gif)
+
 ## Walking through it
 
 **The reward curve is not a straight line up, and that's the honest

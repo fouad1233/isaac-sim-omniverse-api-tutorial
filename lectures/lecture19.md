@@ -49,6 +49,10 @@ working; the red line visibly separating from it by the end is Lecture 18's
 drift finding, reproduced here under a real planned route instead of a
 straight calibration line.
 
+A real windowed run of `lecture19.py`, the Module 2 capstone scene visible in the viewport as the map-then-plan-then-drive pipeline behind the figure above executes.
+
+![Screen recording of a real, non-headless run of lecture19.py showing Kit's own window and viewport live.](figures/lecture19_sim.gif)
+
 ## Walking through it
 
 **Three phases, two different eras of this course's own API usage, in
